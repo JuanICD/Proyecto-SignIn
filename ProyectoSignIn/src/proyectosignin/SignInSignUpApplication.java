@@ -28,6 +28,7 @@ public class SignInSignUpApplication extends Application {
         
         GestionUsuariosController controller = loader.getController();
         controller.initStage(stage);
+        
              
     }
 
