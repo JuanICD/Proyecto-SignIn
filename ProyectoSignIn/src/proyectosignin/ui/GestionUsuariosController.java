@@ -7,6 +7,7 @@ package proyectosignin.ui;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.beans.value.ObservableValue;
@@ -22,7 +23,6 @@ import javafx.scene.control.Hyperlink;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
-import javafx.scene.layout.Pane;
 
 import proyectosignin.exceptions.InvalidLastNameException;
 import proyectosignin.exceptions.InvalidNameException;
@@ -35,6 +35,9 @@ import javafx.stage.Stage;
  * @author juan
  */
 public class GestionUsuariosController {
+
+    static final String REGEX_NAME = "^[A-Za-z ]+$";
+    static final String REGEX_EMAIL = "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$";
 
     @FXML
     private TextField tfEmail;
@@ -65,8 +68,6 @@ public class GestionUsuariosController {
     @FXML
     private Button btnBack;
     @FXML
-    private Pane mainPane;
-    @FXML
     private Label emailMessage;
     @FXML
     private Label nameMessage;
@@ -80,6 +81,10 @@ public class GestionUsuariosController {
     private Label stateMessage;
     @FXML
     private Label zipMessage;
+    @FXML
+    private Label phoneMessage;
+    @FXML
+    private Label cityMessage;
     @FXML
     private Label passwordMessage;
     @FXML
@@ -119,10 +124,15 @@ public class GestionUsuariosController {
             tfFirstName.focusedProperty()
                     .addListener(this::nameFocusChanged);
             tfMiddleName.focusedProperty()
-                    .addListener(this::nameFocusChanged);
+                    .addListener(this::midNameFocusChanged);
             tfLastName.focusedProperty()
-                    .addListener(this::nameFocusChanged);
+                    .addListener(this::lastNameFocusChanged);
 
+            tfPhone.focusedProperty()
+                    .addListener(this::phoneFocusChanged);
+
+            tfZip.focusedProperty()
+                    .addListener(this::zipFocusChanged);
             //Asociar manjeadores a eventos
             btnBack.setOnAction(this::handleExitOnAction);
             btnSignUp.setOnAction(this::handleOnSignUpAction);
@@ -140,72 +150,87 @@ public class GestionUsuariosController {
 
     }
 
-    /**
-     *
-     */
-    public void handleOnSignUpAction(ActionEvent event) {
+    private void zipFocusChanged(ObservableValue observable, Boolean oldValue, Boolean newValue) {
 
     }
 
-    public void handleExitOnAction(ActionEvent event) {
+    private void phoneFocusChanged(ObservableValue observable, Boolean oldValue, Boolean newValue) {
+        if (!newValue) {
+            try {
+                String phone = tfPhone
+                        .getText()
+                        .trim();
 
-        Alert alert = new Alert(Alert.AlertType.CONFIRMATION,
-                "Are you sure you want to exit?",
-                ButtonType.OK,
-                ButtonType.CANCEL);
+                if (phone.isEmpty()) {
+                    throw new NumberFormatException("The phone must be number");
+                }
+                int newPhone = Integer.parseInt(phone);
+                
+                if (phone.length() != 9) {
+                    throw new IllegalArgumentException("Phone length must be 9 digits");
+                }
 
-        alert.showAndWait();
+                showCheckLabel(phoneMessage);
+
+            } catch (NumberFormatException e) {
+                showErrorLabel(e.getMessage(), phoneMessage);
+            } catch (IllegalArgumentException num) {
+                showErrorLabel(num.getMessage(), phoneMessage);
+            }
+        }
+    }
+
+    private void midNameFocusChanged(ObservableValue observable, Boolean oldValue, Boolean newValue) {
+
+        String midName = tfMiddleName.getText().toUpperCase().trim();
+
+        if (!newValue) {
+            try {
+                if (!midName.matches(REGEX_NAME)) {
+                    throw new InvalidMidNameException("Format mid name invalid");
+                }
+                showCheckLabel(midNameMessage);
+            } catch (InvalidMidNameException e) {
+
+                showErrorLabel(e.getMessage(), midNameMessage);
+            }
+        }
+    }
+
+    private void lastNameFocusChanged(ObservableValue observable, Boolean oldValue, Boolean newValue) {
+        String lastName = tfLastName.getText().toUpperCase().trim();
+        if (!newValue) {
+            try {
+                if (!lastName.matches(REGEX_NAME)) {
+                    throw new InvalidLastNameException("Format last name invalid");
+                }
+                showCheckLabel(lastNameMessage);
+            } catch (InvalidLastNameException e) {
+                showErrorLabel(e.getMessage(), lastNameMessage);
+            }
+        }
 
     }
 
     private void nameFocusChanged(ObservableValue observable, Boolean oldValue, Boolean newValue) {
 
-        try {
-            //Validar que los campos no lleven espacios de más ni al principio ni al final
-            //Convertir todos los caracteres a mayúsculas antes de registrar o de pasar a la base de datos 
-            String fName = tfFirstName.getText().toUpperCase().trim();
-            String mName = tfMiddleName.getText().toUpperCase().trim();
-            String lName = tfLastName.getText().toUpperCase().trim();
-            String regexName = "^[A-Za-z ]+$";
-
-            //Validar que los campos no estén vacíos 
-            if (fName.isEmpty()) {
-                throw new InvalidNameException("The field must be informed ");
+        String fName = tfFirstName.getText().toUpperCase().trim();
+        if (!newValue) {
+            try {
+                if (!fName.matches(REGEX_NAME)) {
+                    throw new InvalidNameException("Format name invalid");
+                }
+                showCheckLabel(nameMessage);
+            } catch (InvalidNameException name) {
+                showErrorLabel(name.getMessage(), nameMessage);
             }
-            if (mName.isEmpty()) {
-                throw new InvalidMidNameException("The field must be informed ");
-            }
-            if (lName.isEmpty()) {
-                throw new InvalidLastNameException("The field must be informed");
-            }
-            //Validar que no hay datos numéricos 
-
-            //Validar que no contengan caracteres especiales 
-            if (!fName.matches(regexName)) {
-                throw new InvalidNameException("Format name invalid");
-            }
-            if (!mName.matches(regexName)) {
-                throw new InvalidMidNameException("Format middle name invalid");
-            }
-            if (!lName.matches(regexName)) {
-                throw new InvalidLastNameException("Format last name invalid");
-            }
-
-            showCheckLabel(nameMessage);
-
-        } catch (InvalidNameException name) {
-            showErrorLabel(name.getMessage(), nameMessage);
-        } catch (InvalidMidNameException midName) {
-            showErrorLabel(midName.getMessage(), midNameMessage);
-        } catch (InvalidLastNameException lastName) {
-            showErrorLabel(lastName.getMessage(), lastNameMessage);
         }
     }
 
     private void emailfocusChanged(ObservableValue observable, Boolean oldValue, Boolean newValue) {
         if (!newValue) {
             LOGGER.info("Validando");
-            String validator = "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$";
+
             String emailText = tfEmail.getText().trim();
             try {
                 //Validar que el campo no este vacio 
@@ -217,7 +242,7 @@ public class GestionUsuariosController {
                     throw new Exception("The email exceeds the maximum length");
                 }
                 //Validar que tenga el formato correcto 
-                if (!emailText.matches(validator)) {
+                if (!emailText.matches(REGEX_EMAIL)) {
                     throw new Exception("Invalid email format");
                 }
                 //Si el campo es válido, mostrar etiqueta asociada al campo con mensaje de validación correcta  
@@ -229,6 +254,27 @@ public class GestionUsuariosController {
             }
         }
 
+    }
+
+    public void handleOnSignUpAction(ActionEvent event) {
+
+    }
+
+    public void handleExitOnAction(ActionEvent event) {
+
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION,
+                "Are you sure you want to exit?",
+                ButtonType.OK,
+                ButtonType.CANCEL);
+
+        Optional<ButtonType> btnType = alert.showAndWait();
+        if (btnType.isPresent()) {
+            ButtonType btnOk = btnType.get();
+            if (btnOk.equals(ButtonType.OK)) {
+                LOGGER.info("Cerrando programa");
+                //Platform.exit(); --> Posible solucion para cerrar la ventana pero cierra toda la app
+            }
+        }
     }
 
     /**

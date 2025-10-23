@@ -6,10 +6,7 @@
 <?import java.lang.*?>
 <?import javafx.scene.layout.*?>
 
-<Pane fx:id="mainPane" maxHeight="-Infinity" maxWidth="-Infinity" 
-      minHeight="-Infinity" minWidth="-Infinity" prefHeight="768.0" prefWidth="1024.0" 
-      xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" 
-      fx:controller="proyectosignin.ui.GestionUsuariosController">
+<Pane fx:id="mainPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="768.0" prefWidth="1024.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="proyectosignin.ui.GestionUsuariosController">
     <children>
         <Label alignment="CENTER" layoutX="400.0" layoutY="7.0" prefHeight="75.0" prefWidth="251.0" text="Sign Up">
             <font>
@@ -168,15 +165,17 @@
                 <Tooltip text="The password must have at least one capital letter, one number, and one special charact" />
             </tooltip>
         </Label>
-        <Label fx:id="emailMessage" layoutX="804.0" layoutY="155.0" text=" " textFill="RED" />
-        <Label fx:id="nameMessage" layoutX="804.0" layoutY="201.0" textFill="#1fff48" visible="false"/>
-        <Label fx:id="lastNameMessage" layoutX="804.0" layoutY="259.0" textFill="#1fff48" visible="false"/>
-        <Label fx:id="midNameMessage" layoutX="804.0" layoutY="313.0" textFill="#1fff48" visible="false"/>
-        <Label fx:id="streetMessage" layoutX="804.0" layoutY="367.0" textFill="#1fff48" visible="false"/>
-        <Label fx:id="stateMessage" layoutX="804.0" layoutY="418.0" textFill="#1fff48" visible="false"/>
-        <Label fx:id="zipMessage" layoutX="804.0" layoutY="471.0" textFill="#1fff48" visible="false"/>  
-        <Label fx:id="passwordMessage" layoutX="804.0" layoutY="524.0" textFill="#1fff48" visible="false"/>
-        <Label fx:id="confirmPassMessage" layoutX="804.0" layoutY="581.0" textFill="#1fff48" visible="false"/>
+        <Label fx:id="emailMessage" layoutX="804.0" layoutY="155.0" text=" " textFill="RED" visible="false" />
+        <Label fx:id="nameMessage" layoutX="804.0" layoutY="201.0" textFill="#1fff48" visible="false" />
+        <Label fx:id="lastNameMessage" alignment="CENTER" contentDisplay="CENTER" layoutX="797.0" layoutY="256.0" textAlignment="CENTER" textFill="#1fff48" visible="false" />
+        <Label fx:id="midNameMessage" alignment="CENTER" contentDisplay="CENTER" layoutX="797.0" layoutY="322.0" textAlignment="CENTER" textFill="#1fff48" visible="false" />
+        <Label fx:id="streetMessage" alignment="CENTER" contentDisplay="CENTER" layoutX="797.0" layoutY="376.0" textAlignment="CENTER" textFill="#1fff48" visible="false" />
+        <Label fx:id="stateMessage" alignment="CENTER" contentDisplay="CENTER" layoutX="796.0" layoutY="424.0" prefHeight="23.0" prefWidth="15.0" textAlignment="CENTER" textFill="#1fff48" visible="false" />
+        <Label fx:id="zipMessage" alignment="CENTER" contentDisplay="CENTER" layoutX="797.0" layoutY="482.0" textAlignment="CENTER" textFill="#1fff48" visible="false" />  
+        <Label fx:id="passwordMessage" alignment="CENTER" contentDisplay="CENTER" layoutX="797.0" layoutY="533.0" prefHeight="17.0" prefWidth="15.0" textAlignment="CENTER" textFill="#1fff48" visible="false" />
+        <Label fx:id="confirmPassMessage" alignment="CENTER" contentDisplay="CENTER" layoutX="798.0" layoutY="590.0" prefHeight="17.0" prefWidth="15.0" textAlignment="CENTER" textFill="#1fff48" visible="false" />
+        <Label fx:id="cityMessage" alignment="CENTER" contentDisplay="CENTER" layoutX="800.0" layoutY="424.0" prefHeight="23.0" prefWidth="15.0" textAlignment="CENTER" textFill="#1fff48" visible="false" />
+        <Label fx:id="phoneMessage" layoutX="800.0" layoutY="477.0" textAlignment="CENTER" textFill="#1fff48" visible="false" />
        
     </children>
 </Pane>
