@@ -25,12 +25,7 @@ public class ProyectoSignInApplication extends Application {
         
         GestionUsuariosController controller = loader.getController();
         
-        controller.initStage(stage);
-        
-        Scene scene = new Scene(root);
-        
-        stage.setScene(scene);
-        stage.show();
+        controller.initStage(stage,root);
     }
 
     /**
