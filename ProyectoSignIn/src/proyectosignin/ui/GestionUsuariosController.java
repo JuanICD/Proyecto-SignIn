@@ -5,22 +5,28 @@
  */
 package proyectosignin.ui;
 
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.beans.value.ObservableValue;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.Initializable;
+import javafx.scene.Scene;
+import javafx.scene.Parent;
+import javafx.scene.control.Alert;
 
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.Hyperlink;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.Pane;
+
+import proyectosignin.exceptions.InvalidLastNameException;
+import proyectosignin.exceptions.InvalidNameException;
+import proyectosignin.exceptions.InvalidMidNameException;
 
 import javafx.stage.Stage;
 
@@ -28,7 +34,7 @@ import javafx.stage.Stage;
  *
  * @author juan
  */
-public class GestionUsuariosController implements Initializable{
+public class GestionUsuariosController {
 
     @FXML
     private TextField tfEmail;
@@ -80,13 +86,18 @@ public class GestionUsuariosController implements Initializable{
     private Label confirmPassMessage;
 
     private static final Logger LOGGER = Logger.getLogger("proyectosignin.ui");
-    
-    
 
-    public void initStage(Stage stage) {
+    /**
+     *
+     * @param stage
+     * @param root
+     */
+    public void initStage(Stage stage, Parent root) {
         try {
-            LOGGER.info("Initializing window");
 
+            LOGGER.info("Initializing window");
+            Scene scene = new Scene(root);
+            stage.setScene(scene);
             //Deshabilitar el botón de Sign Up hasta que todos los campos estén rellenos 
             btnSignUp.setDisable(true);
 
@@ -100,8 +111,21 @@ public class GestionUsuariosController implements Initializable{
             fieldsList().clear();
 
             //Ajustar el foco al primer texto, email
-            tfEmail.focusedProperty().addListener(this::focusChanged);
             tfEmail.requestFocus();
+
+            //Asociacion de manejadores a properties
+            tfEmail.focusedProperty()
+                    .addListener(this::emailfocusChanged);
+            tfFirstName.focusedProperty()
+                    .addListener(this::nameFocusChanged);
+            tfMiddleName.focusedProperty()
+                    .addListener(this::nameFocusChanged);
+            tfLastName.focusedProperty()
+                    .addListener(this::nameFocusChanged);
+
+            //Asociar manjeadores a eventos
+            btnBack.setOnAction(this::handleExitOnAction);
+            btnSignUp.setOnAction(this::handleOnSignUpAction);
 
             //Mostrar la ventana 
             stage.show();
@@ -116,72 +140,95 @@ public class GestionUsuariosController implements Initializable{
 
     }
 
-    public void handleOnSelectEmail() {
-
-        tfEmail.focusedProperty().addListener((observable, oldValue, newValue) -> {
-            //Cuando el campo email pierde el foco
-            if (!newValue) {
-                LOGGER.info("Validando");
-                String validator = "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$";
-                String emailText = tfEmail.getText().trim();
-                try {
-                    //Validar que el campo no este vacio 
-                    if (emailText.isEmpty()) {
-                        throw new Exception("This field must be informed");
-                    }
-                    //Validar que cumple el límite de caracteres posibles para el campo 
-                    if (emailText.length() > 255) {
-                        throw new Exception("The email exceeds the maximum length");
-                    }
-                    //Validar que tenga el formato correcto 
-                    if (!emailText.matches(validator)) {
-                        throw new Exception("Invalid email format");
-                    }
-                    //Si el campo es válido, mostrar etiqueta asociada al campo con mensaje de validación correcta  
-                    showCheckLabel(emailMessage);
-
-                } catch (Exception e) {
-                    showErrorLabel(e.getMessage(), emailMessage);
-                }
-            }
-        });
+    /**
+     *
+     */
+    public void handleOnSignUpAction(ActionEvent event) {
 
     }
 
-    public void handleOnSelectNames() {
-        tfFirstName.focusedProperty().addListener((observable, oldValue, newValue) -> {
+    public void handleExitOnAction(ActionEvent event) {
+
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION,
+                "Are you sure you want to exit?",
+                ButtonType.OK,
+                ButtonType.CANCEL);
+
+        alert.showAndWait();
+
+    }
+
+    private void nameFocusChanged(ObservableValue observable, Boolean oldValue, Boolean newValue) {
+
+        try {
+            //Validar que los campos no lleven espacios de más ni al principio ni al final
+            //Convertir todos los caracteres a mayúsculas antes de registrar o de pasar a la base de datos 
+            String fName = tfFirstName.getText().toUpperCase().trim();
+            String mName = tfMiddleName.getText().toUpperCase().trim();
+            String lName = tfLastName.getText().toUpperCase().trim();
+            String regexName = "^[A-Za-z ]+$";
+
+            //Validar que los campos no estén vacíos 
+            if (fName.isEmpty()) {
+                throw new InvalidNameException("The field must be informed ");
+            }
+            if (mName.isEmpty()) {
+                throw new InvalidMidNameException("The field must be informed ");
+            }
+            if (lName.isEmpty()) {
+                throw new InvalidLastNameException("The field must be informed");
+            }
+            //Validar que no hay datos numéricos 
+
+            //Validar que no contengan caracteres especiales 
+            if (!fName.matches(regexName)) {
+                throw new InvalidNameException("Format name invalid");
+            }
+            if (!mName.matches(regexName)) {
+                throw new InvalidMidNameException("Format middle name invalid");
+            }
+            if (!lName.matches(regexName)) {
+                throw new InvalidLastNameException("Format last name invalid");
+            }
+
+            showCheckLabel(nameMessage);
+
+        } catch (InvalidNameException name) {
+            showErrorLabel(name.getMessage(), nameMessage);
+        } catch (InvalidMidNameException midName) {
+            showErrorLabel(midName.getMessage(), midNameMessage);
+        } catch (InvalidLastNameException lastName) {
+            showErrorLabel(lastName.getMessage(), lastNameMessage);
+        }
+    }
+
+    private void emailfocusChanged(ObservableValue observable, Boolean oldValue, Boolean newValue) {
+        if (!newValue) {
+            LOGGER.info("Validando");
+            String validator = "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$";
+            String emailText = tfEmail.getText().trim();
             try {
-                //Validar que los campos no lleven espacios de más ni al principio ni al final
-                //Convertir todos los caracteres a mayúsculas antes de registrar o de pasar a la base de datos 
-                String fName = tfFirstName.getText().toUpperCase().trim();
-                String mName = tfMiddleName.getText().toUpperCase().trim();
-                String lName = tfLastName.getText().toUpperCase().trim();
-                String regexName = "^[A-Za-z ]+$";
-                if (!newValue) {
-                    //Validar que los campos no estén vacíos 
-                    if (fName.isEmpty()) {
-                        throw new Exception("The field must be informed ");
-                    }
-                    //Validar que no hay datos numéricos 
-                    //Validar que no contengan caracteres especiales 
-                    if (!fName.matches(regexName)) {
-                        throw new Exception("Format name invalid");
-                    }
-                    showCheckLabel(nameMessage);
+                //Validar que el campo no este vacio 
+                if (emailText.isEmpty()) {
+                    throw new Exception("This field must be informed");
                 }
+                //Validar que cumple el límite de caracteres posibles para el campo 
+                if (emailText.length() > 255) {
+                    throw new Exception("The email exceeds the maximum length");
+                }
+                //Validar que tenga el formato correcto 
+                if (!emailText.matches(validator)) {
+                    throw new Exception("Invalid email format");
+                }
+                //Si el campo es válido, mostrar etiqueta asociada al campo con mensaje de validación correcta  
+                showCheckLabel(emailMessage);
 
             } catch (Exception e) {
-                 showErrorLabel(e.getMessage(), nameMessage);
-            }
-        });
-    }
+                showErrorLabel(e.getMessage(), emailMessage);
 
-    private void focusChanged(ObservableValue observable, Boolean oldValue, Boolean newValue) {
-        if (newValue) {
-            LOGGER.info("onFocus");
-        } else if (oldValue) {
-            LOGGER.info("onBlur");
+            }
         }
+
     }
 
     /**
@@ -220,12 +267,6 @@ public class GestionUsuariosController implements Initializable{
 
         return fields;
 
-    }
-
-    @Override
-    public void initialize(URL location, ResourceBundle resources) {
-       handleOnSelectEmail();
-       handleOnSelectNames();
     }
 
 }
