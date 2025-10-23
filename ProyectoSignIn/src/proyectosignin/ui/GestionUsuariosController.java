@@ -151,7 +151,27 @@ public class GestionUsuariosController {
     }
 
     private void zipFocusChanged(ObservableValue observable, Boolean oldValue, Boolean newValue) {
+        if (!newValue) {
+            try {
 
+                String zip = tfZip
+                        .getText()
+                        .trim();
+                if (zip.isEmpty()) {
+                    throw new NumberFormatException();
+                }
+                int intZip = Integer.parseInt(zip);
+
+                if (zip.length() != 5) {
+                    throw new IllegalArgumentException("Zip length must be 6 digits");
+                }
+                showCheckLabel(zipMessage);
+            } catch (NumberFormatException num) {
+                showErrorLabel("This field must be informed", zipMessage);
+            } catch (IllegalArgumentException e) {
+                showErrorLabel(e.getMessage(), zipMessage);
+            }
+        }
     }
 
     private void phoneFocusChanged(ObservableValue observable, Boolean oldValue, Boolean newValue) {
@@ -162,10 +182,10 @@ public class GestionUsuariosController {
                         .trim();
 
                 if (phone.isEmpty()) {
-                    throw new NumberFormatException("The phone must be number");
+                    throw new NumberFormatException();
                 }
-                int newPhone = Integer.parseInt(phone);
-                
+                int intPhone = Integer.parseInt(phone);
+
                 if (phone.length() != 9) {
                     throw new IllegalArgumentException("Phone length must be 9 digits");
                 }
@@ -173,12 +193,13 @@ public class GestionUsuariosController {
                 showCheckLabel(phoneMessage);
 
             } catch (NumberFormatException e) {
-                showErrorLabel(e.getMessage(), phoneMessage);
+                showErrorLabel("The phone must be numberic only", phoneMessage);
             } catch (IllegalArgumentException num) {
                 showErrorLabel(num.getMessage(), phoneMessage);
             }
         }
     }
+//TODO lanzar excepciones si el campo esta vacio
 
     private void midNameFocusChanged(ObservableValue observable, Boolean oldValue, Boolean newValue) {
 
@@ -186,12 +207,14 @@ public class GestionUsuariosController {
 
         if (!newValue) {
             try {
+                if (midName.isEmpty()) {
+                    throw new InvalidMidNameException("This field must be informed");
+                }
                 if (!midName.matches(REGEX_NAME)) {
                     throw new InvalidMidNameException("Format mid name invalid");
                 }
                 showCheckLabel(midNameMessage);
             } catch (InvalidMidNameException e) {
-
                 showErrorLabel(e.getMessage(), midNameMessage);
             }
         }
