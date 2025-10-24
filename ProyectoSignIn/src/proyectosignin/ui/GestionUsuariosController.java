@@ -35,11 +35,11 @@ import javafx.stage.Stage;
  * @author juan
  */
 public class GestionUsuariosController {
-    
+
     static final String REGEX_NAME = "^[A-Za-z ]+$";
     static final String REGEX_EMAIL = "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$";
     static final String REGEX_PASSWORD = "^(?=.*[A-Z])(?=.*[0-9])(?=.*[\\W_])(?=.{8,}).*$";
-    
+
     @FXML
     private TextField tfEmail;
     @FXML
@@ -90,7 +90,7 @@ public class GestionUsuariosController {
     private Label passwordMessage;
     @FXML
     private Label confirmPassMessage;
-    
+
     private static final Logger LOGGER = Logger.getLogger("proyectosignin.ui");
 
     /**
@@ -100,7 +100,7 @@ public class GestionUsuariosController {
      */
     public void initStage(Stage stage, Parent root) {
         try {
-            
+
             LOGGER.info("Initializing window");
             Scene scene = new Scene(root);
             stage.setScene(scene);
@@ -134,6 +134,10 @@ public class GestionUsuariosController {
                     .addListener(this::zipFocusChanged);
             tfCity.focusedProperty()
                     .addListener(this::cityFocusChanged);
+            tfState.focusedProperty()
+                    .addListener(this::stateFocusChanged);
+            tfStreet.focusedProperty()
+                    .addListener(this::streetFocusChanged);
             pfPass.focusedProperty()
                     .addListener(this::passwordFocusChanged);
 
@@ -145,54 +149,75 @@ public class GestionUsuariosController {
             stage.show();
             //Centrar la ventana en la pantalla
             stage.centerOnScreen();
-            
+
         } catch (Exception e) {
             String erroMsg = "Error opening window:\n" + e.getMessage();
-            
+
             LOGGER.log(Level.SEVERE, erroMsg);
         }
-        
+
     }
     
-    private void passwordFocusChanged(ObservableValue observable, Boolean oldValue, Boolean newValue) {
+    private void streetFocusChanged(ObservableValue observable, Boolean oldValue, Boolean newValue){
         
-        if (!newValue) {
-            try {
+    }
+
+    private void passwordFocusChanged(ObservableValue observable, Boolean oldValue, Boolean newValue) {
+
+        try {
+            if (!newValue) {
                 String password = pfPass.getText();
 
                 //Validar contraseña
                 if (password.matches(REGEX_NAME)) {
                     LOGGER.info("Contraseña no valida");
-                    throw new Exception("Password does not\n" + "meet requirements");
+                    throw new Exception("Password does not meet requirements");
                 }
                 if (password.length() < 8) {
                     throw new IllegalArgumentException("The password is too short");
                 }
                 showCheckLabel(passwordMessage);
-            } catch (Exception e) {
-                showErrorLabel(e.getMessage(), passwordMessage);
             }
+        } catch (Exception e) {
+            showErrorLabel(e.getMessage(), passwordMessage);
         }
     }
-    
+
     private void cityFocusChanged(ObservableValue observable, Boolean oldValue, Boolean newValue) {
-        if (!newValue) {
-            try {
+
+        try {
+            if (!newValue) {
                 String city = tfCity.getText().trim().toUpperCase();
                 if (city.isEmpty()) {
                     throw new IllegalStateException("The field must be informed");
                 }
                 showCheckLabel(cityMessage);
-            } catch (IllegalStateException e) {
-                showErrorLabel(e.getMessage(), nameMessage);
             }
+        } catch (IllegalStateException e) {
+            showErrorLabel(e.getMessage(), cityMessage);
+        }
+
+    }
+
+    private void stateFocusChanged(ObservableValue observable, Boolean oldValue, Boolean newValue) {
+        try {
+            String state = tfState.getText().trim().toUpperCase();
+            if (!newValue) {
+                if (state.isEmpty()) {
+                    throw new Exception("The field must be informed");
+                }
+                showCheckLabel(stateMessage);
+            }
+
+        } catch (Exception e) {
+            showErrorLabel(e.getMessage(), stateMessage);
         }
     }
-    
+
     private void zipFocusChanged(ObservableValue observable, Boolean oldValue, Boolean newValue) {
-        if (!newValue) {
-            try {
-                
+
+        try {
+            if (!newValue) {
                 String zip = tfZip
                         .getText()
                         .trim();
@@ -200,52 +225,55 @@ public class GestionUsuariosController {
                     throw new NumberFormatException();
                 }
                 int intZip = Integer.parseInt(zip);
-                
+
                 if (zip.length() != 5) {
                     throw new IllegalArgumentException("Zip length must be 6 digits");
                 }
+
                 showCheckLabel(zipMessage);
-            } catch (NumberFormatException num) {
-                showErrorLabel("This field must be informed", zipMessage);
-            } catch (IllegalArgumentException e) {
-                showErrorLabel(e.getMessage(), zipMessage);
             }
+        } catch (NumberFormatException num) {
+            showErrorLabel("This field must be informed", zipMessage);
+        } catch (IllegalArgumentException e) {
+            showErrorLabel(e.getMessage(), zipMessage);
         }
+
     }
-    
+
     private void phoneFocusChanged(ObservableValue observable, Boolean oldValue, Boolean newValue) {
-        if (!newValue) {
-            try {
+
+        try {
+            if (!newValue) {
                 String phone = tfPhone
                         .getText()
                         .trim();
-                
+
                 if (phone.isEmpty()) {
                     throw new NumberFormatException();
                 }
                 int intPhone = Integer.parseInt(phone);
-                
+
                 if (phone.length() != 9) {
                     throw new IllegalArgumentException("Phone length must be 9 digits");
                 }
-                
+
                 showCheckLabel(phoneMessage);
-                
-            } catch (NumberFormatException e) {
-                showErrorLabel("The phone must be numberic only", phoneMessage);
-            } catch (IllegalArgumentException num) {
-                showErrorLabel(num.getMessage(), phoneMessage);
             }
+
+        } catch (NumberFormatException e) {
+            showErrorLabel("The phone must be numberic only", phoneMessage);
+        } catch (IllegalArgumentException num) {
+            showErrorLabel(num.getMessage(), phoneMessage);
         }
+
     }
 //TODO lanzar excepciones si el campo esta vacio
 
     private void midNameFocusChanged(ObservableValue observable, Boolean oldValue, Boolean newValue) {
-        
-        String midName = tfMiddleName.getText().toUpperCase().trim();
-        
-        if (!newValue) {
-            try {
+
+        try {
+            String midName = tfMiddleName.getText().toUpperCase().trim();
+            if (!newValue) {
                 if (midName.isEmpty()) {
                     throw new InvalidMidNameException("This field must be informed");
                 }
@@ -253,52 +281,61 @@ public class GestionUsuariosController {
                     throw new InvalidMidNameException("Format mid name invalid");
                 }
                 showCheckLabel(midNameMessage);
-            } catch (InvalidMidNameException e) {
-                showErrorLabel(e.getMessage(), midNameMessage);
             }
+        } catch (InvalidMidNameException e) {
+            showErrorLabel(e.getMessage(), midNameMessage);
         }
+
     }
-    
+
     private void lastNameFocusChanged(ObservableValue observable, Boolean oldValue, Boolean newValue) {
-        String lastName = tfLastName.getText().toUpperCase().trim();
-        if (!newValue) {
-            try {
+
+        try {
+            if (!newValue) {
+                String lastName = tfLastName.getText().toUpperCase().trim();
+                if (lastName.isEmpty()) {
+                    throw new InvalidLastNameException("This field must be informed");
+                }
                 if (!lastName.matches(REGEX_NAME)) {
                     throw new InvalidLastNameException("Format last name invalid");
                 }
                 showCheckLabel(lastNameMessage);
-            } catch (InvalidLastNameException e) {
-                showErrorLabel(e.getMessage(), lastNameMessage);
             }
+        } catch (InvalidLastNameException e) {
+            showErrorLabel(e.getMessage(), lastNameMessage);
         }
-        
+
     }
-    
+
     private void nameFocusChanged(ObservableValue observable, Boolean oldValue, Boolean newValue) {
-        
-        String fName = tfFirstName.getText().toUpperCase().trim();
-        if (!newValue) {
-            try {
+
+        try {
+            if (!newValue) {
+                String fName = tfFirstName.getText().toUpperCase().trim();
+                if (fName.isEmpty()) {
+                    throw new InvalidNameException("This field must be informed");
+                }
                 if (!fName.matches(REGEX_NAME)) {
                     throw new InvalidNameException("Format name invalid");
                 }
                 showCheckLabel(nameMessage);
-            } catch (InvalidNameException name) {
-                showErrorLabel(name.getMessage(), nameMessage);
             }
+        } catch (InvalidNameException name) {
+            showErrorLabel(name.getMessage(), nameMessage);
         }
     }
-    
+
     private void emailfocusChanged(ObservableValue observable, Boolean oldValue, Boolean newValue) {
-        if (!newValue) {
-            LOGGER.info("Validando");
-            
-            String emailText = tfEmail.getText().trim();
-            try {
+
+        try {
+            if (!newValue) {
+                LOGGER.info("Validando");
+                String emailText = tfEmail.getText().trim();
                 //Validar que el campo no este vacio 
                 if (emailText.isEmpty()) {
                     throw new Exception("This field must be informed");
                 }
+
                 //Validar que cumple el límite de caracteres posibles para el campo 
                 if (emailText.length() > 255) {
                     throw new Exception("The email exceeds the maximum length");
@@ -309,33 +346,37 @@ public class GestionUsuariosController {
                 }
                 //Si el campo es válido, mostrar etiqueta asociada al campo con mensaje de validación correcta  
                 showCheckLabel(emailMessage);
-                
-            } catch (Exception e) {
-                showErrorLabel(e.getMessage(), emailMessage);
-                
             }
+        } catch (Exception e) {
+            showErrorLabel(e.getMessage(), emailMessage);
+
         }
-        
+
     }
-    
-    public void handleOnSignUpAction(ActionEvent event) {
-        
+
+    private void handleOnSignUpAction(ActionEvent event) {
+
     }
-    
-    public void handleExitOnAction(ActionEvent event) {
-        
-        Alert alert = new Alert(Alert.AlertType.CONFIRMATION,
-                "Are you sure you want to exit?",
-                ButtonType.OK,
-                ButtonType.CANCEL);
-        
-        Optional<ButtonType> btnType = alert.showAndWait();
-        if (btnType.isPresent()) {
-            ButtonType btnOk = btnType.get();
-            if (btnOk.equals(ButtonType.OK)) {
-                LOGGER.info("Cerrando programa");
-                //Platform.exit(); --> Posible solucion para cerrar la ventana pero cierra toda la app
+
+    private void handleExitOnAction(ActionEvent event) {
+
+        try {
+
+            Alert alert = new Alert(Alert.AlertType.CONFIRMATION,
+                    "Are you sure you want to exit?",
+                    ButtonType.OK,
+                    ButtonType.CANCEL);
+
+            Optional<ButtonType> btnType = alert.showAndWait();
+            if (btnType.isPresent()) {
+                ButtonType btnOk = btnType.get();
+                if (btnOk.equals(ButtonType.OK)) {
+                    LOGGER.info("Cerrando programa");
+                    //Platform.exit(); --> Posible solucion para cerrar la ventana pero cierra toda la app
+                }
             }
+        } catch (Exception e) {
+
         }
     }
 
@@ -346,23 +387,23 @@ public class GestionUsuariosController {
      * @param label
      */
     protected void showErrorLabel(String erroMsg, Label label) {
-        
+
         label.setVisible(true);
         label.setText(erroMsg);
         label.setStyle("-fx-text-fill: red;");
-        
+
     }
-    
+
     protected void showCheckLabel(Label label) {
         label.setVisible(true);
         label.setText("✔");
         label.setStyle("-fx-text-fill: green;");
     }
-    
+
     private List<TextField> fieldsList() {
-        
+
         List<TextField> fields = new ArrayList<>();
-        
+
         fields.add(tfZip);
         fields.add(tfEmail);
         fields.add(tfCity);
@@ -372,9 +413,9 @@ public class GestionUsuariosController {
         fields.add(tfPhone);
         fields.add(tfState);
         fields.add(tfStreet);
-        
+
         return fields;
-        
+
     }
-    
+
 }
