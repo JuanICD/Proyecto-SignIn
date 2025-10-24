@@ -25,12 +25,9 @@ public class ProyectoSignIn extends Application {
         Parent root = (Parent)loader.load();
         ChangePasswordController controller = loader.getController();
         
-        controller.init(stage);
+        controller.init(stage,root);
         
-        Scene scene = new Scene(root);
-        
-        stage.setScene(scene);
-        stage.show();
+      
     }
 
     /**
