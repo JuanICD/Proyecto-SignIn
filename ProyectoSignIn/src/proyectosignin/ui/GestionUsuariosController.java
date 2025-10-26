@@ -36,10 +36,6 @@ import javafx.stage.Stage;
  */
 public class GestionUsuariosController {
 
-    static final String REGEX_NAME = "^[A-Za-z ]+$";
-    static final String REGEX_EMAIL = "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$";
-    static final String REGEX_PASSWORD = "^(?=.*[A-Z])(?=.*[0-9])(?=.*[\\W_])(?=.{8,}).*$";
-
     @FXML
     private TextField tfEmail;
     @FXML
@@ -93,6 +89,11 @@ public class GestionUsuariosController {
 
     private static final Logger LOGGER = Logger.getLogger("proyectosignin.ui");
 
+    private static final String REGEX_NAME = "^[A-Za-z ]+$";
+    private static final String REGEX_EMAIL = "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$";
+    private static final String REGEX_PASSWORD = "^(?=.*[A-Z])(?=.*[0-9])(?=.*[\\W_])(?=.{8,}).*$";
+    private static final String REGEX_PHONE = "^\\d{9}$";
+
     /**
      *
      * @param stage
@@ -140,6 +141,7 @@ public class GestionUsuariosController {
                     .addListener(this::streetFocusChanged);
             pfPass.focusedProperty()
                     .addListener(this::passwordFocusChanged);
+            pfConfirmPass.focusedProperty().addListener(this::confirmPassFocusChanged);
 
             //Asociar manjeadores a eventos
             btnBack.setOnAction(this::handleExitOnAction);
@@ -157,9 +159,45 @@ public class GestionUsuariosController {
         }
 
     }
-    
-    private void streetFocusChanged(ObservableValue observable, Boolean oldValue, Boolean newValue){
-        
+
+    private void streetFocusChanged(ObservableValue observable, Boolean oldValue, Boolean newValue) {
+        try {
+            if (!newValue) {
+                String streer = tfStreet.getText().trim();
+                if (streer.isEmpty()) {
+                    throw new Exception("This field must be informed");
+                }
+                showCheckLabel(streetMessage);
+            }
+        } catch (Exception e) {
+            showErrorLabel(e.getMessage(), streetMessage);
+        }
+    }
+
+    private void confirmPassFocusChanged(ObservableValue observable, Boolean oldValue, Boolean newValue) {
+
+        try {
+            if (!newValue) {
+                String confirmPass = pfConfirmPass.getText();
+                String thisPass = pfPass.getText();
+                //Habilitar boton de sign-up
+                if (confirmPass.isEmpty()) {
+                    throw new Exception("The field must be informed");
+                }
+                if (!thisPass.equals(confirmPass)) {
+                    throw new Exception("The passwod doesn't match");
+                }
+                for (TextField textField : fieldsList()) {
+                    if (textField.getText().isEmpty()) {
+                        btnSignUp.setDisable(true);
+                    }
+                    btnSignUp.setDisable(false);
+                }
+                showCheckLabel(confirmPassMessage);
+            }
+        } catch (Exception e) {
+            showErrorLabel(e.getMessage(), confirmPassMessage);
+        }
     }
 
     private void passwordFocusChanged(ObservableValue observable, Boolean oldValue, Boolean newValue) {
@@ -169,7 +207,10 @@ public class GestionUsuariosController {
                 String password = pfPass.getText();
 
                 //Validar contraseña
-                if (password.matches(REGEX_NAME)) {
+                if (password.isEmpty()) {
+                    throw new Exception("The field must be informed");
+                }
+                if (!password.matches(REGEX_PASSWORD)) {
                     LOGGER.info("Contraseña no valida");
                     throw new Exception("Password does not meet requirements");
                 }
@@ -222,20 +263,15 @@ public class GestionUsuariosController {
                         .getText()
                         .trim();
                 if (zip.isEmpty()) {
-                    throw new NumberFormatException();
+                    throw new Exception("This field must be informed");
                 }
-                int intZip = Integer.parseInt(zip);
-
                 if (zip.length() != 5) {
                     throw new IllegalArgumentException("Zip length must be 6 digits");
                 }
-
                 showCheckLabel(zipMessage);
             }
-        } catch (NumberFormatException num) {
-            showErrorLabel("This field must be informed", zipMessage);
-        } catch (IllegalArgumentException e) {
-            showErrorLabel(e.getMessage(), zipMessage);
+        } catch (Exception num) {
+            showErrorLabel(num.getMessage(), zipMessage);
         }
 
     }
@@ -249,20 +285,16 @@ public class GestionUsuariosController {
                         .trim();
 
                 if (phone.isEmpty()) {
-                    throw new NumberFormatException();
+                    throw new Exception("This field must be informed");
                 }
-                int intPhone = Integer.parseInt(phone);
-
                 if (phone.length() != 9) {
-                    throw new IllegalArgumentException("Phone length must be 9 digits");
+                    throw new Exception("Phone length must be 9 digits");
                 }
 
                 showCheckLabel(phoneMessage);
             }
 
-        } catch (NumberFormatException e) {
-            showErrorLabel("The phone must be numberic only", phoneMessage);
-        } catch (IllegalArgumentException num) {
+        } catch (Exception num) {
             showErrorLabel(num.getMessage(), phoneMessage);
         }
 
@@ -355,6 +387,7 @@ public class GestionUsuariosController {
     }
 
     private void handleOnSignUpAction(ActionEvent event) {
+        LOGGER.info("User register");
 
     }
 

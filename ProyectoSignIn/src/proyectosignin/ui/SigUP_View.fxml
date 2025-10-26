@@ -170,7 +170,7 @@
         <Label fx:id="lastNameMessage" alignment="CENTER" contentDisplay="CENTER" layoutX="797.0" layoutY="256.0" textAlignment="CENTER" textFill="#1fff48" visible="false" />
         <Label fx:id="midNameMessage" alignment="CENTER" contentDisplay="CENTER" layoutX="797.0" layoutY="322.0" textAlignment="CENTER" textFill="#1fff48" visible="false" />
         <Label fx:id="streetMessage" alignment="CENTER" contentDisplay="CENTER" layoutX="797.0" layoutY="376.0" textAlignment="CENTER" textFill="#1fff48" visible="false" />
-        <Label fx:id="stateMessage" alignment="CENTER" contentDisplay="CENTER" layoutX="796.0" layoutY="424.0" prefHeight="23.0" prefWidth="15.0" textAlignment="CENTER" textFill="#1fff48" visible="false" />
+        <Label fx:id="stateMessage" alignment="CENTER" contentDisplay="CENTER" layoutX="796.0" layoutY="424.0" textAlignment="CENTER" textFill="#1fff48" visible="false" />
         <Label fx:id="zipMessage" alignment="CENTER" contentDisplay="CENTER" layoutX="797.0" layoutY="482.0" textAlignment="CENTER" textFill="#1fff48" visible="false" />  
         <Label fx:id="passwordMessage" alignment="CENTER" layoutX="797.0" layoutY="533.0"  textAlignment="CENTER" textFill="#1fff48" visible="false" />
         <Label fx:id="confirmPassMessage"  layoutX="798.0" layoutY="590.0" textFill="#1fff48" visible="false" />
