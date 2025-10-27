@@ -27,11 +27,17 @@ import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 
 /**
+ * Controlador para la vista de registro de usuarios (Sign Up). Maneja la lógica
+ * de la interfaz, la validación de entradas y los eventos de los componentes
+ * FXML.
  *
  * @author juan
  */
 public class GestionUsuariosController {
 
+    /**
+     * FXML fields
+     */
     @FXML
     private TextField tfEmail;
     @FXML
@@ -50,16 +56,24 @@ public class GestionUsuariosController {
     private TextField tfState;
     @FXML
     private TextField tfZip;
+
+    //FXML passwordFields
     @FXML
     private PasswordField pfPass;
     @FXML
     private PasswordField pfConfirmPass;
+
+    //FXML Hyperlink
     @FXML
     private Hyperlink hyperLink;
+
+    //FXML Buttons
     @FXML
     private Button btnSignUp;
     @FXML
     private Button btnBack;
+
+    //FXML Labels
     @FXML
     private Label emailMessage;
     @FXML
@@ -90,6 +104,9 @@ public class GestionUsuariosController {
     private static final String REGEX_PASSWORD = "^(?=.*[A-Z])(?=.*[0-9])(?=.*[\\W_])(?=.{8,}).*$";
 
     /**
+     * Inicializa la ventana (Stage) principal de la aplicación. Configura la
+     * escena, aplica la hoja de estilos, establece el título y asocia todos los
+     * manejadores de eventos (listeners) a los controles de la UI.
      *
      * @param stage
      * @param root
@@ -99,6 +116,9 @@ public class GestionUsuariosController {
 
             LOGGER.info("Initializing window");
             Scene scene = new Scene(root);
+            //Asigno la hoja de estilos
+            scene.getStylesheets().add(getClass().getResource("styleSheet.css").toExternalForm());
+
             stage.setScene(scene);
             //Deshabilitar el botón de Sign Up hasta que todos los campos estén rellenos 
             btnSignUp.setDisable(true);
@@ -117,26 +137,28 @@ public class GestionUsuariosController {
 
             //Asociacion de manejadores a properties
             tfEmail.focusedProperty()
-                    .addListener(this::emailfocusChanged);
+                    .addListener(this::handlerEmailfocusChanged);
             tfFirstName.focusedProperty()
-                    .addListener(this::nameFocusChanged);
+                    .addListener(this::handlerNameFocusChanged);
             tfMiddleName.focusedProperty()
-                    .addListener(this::midNameFocusChanged);
+                    .addListener(this::handlerMidNameFocusChanged);
             tfLastName.focusedProperty()
-                    .addListener(this::lastNameFocusChanged);
+                    .addListener(this::handlerLastNameFocusChanged);
             tfPhone.focusedProperty()
-                    .addListener(this::phoneFocusChanged);
+                    .addListener(this::handlerPhoneFocusChanged);
             tfZip.focusedProperty()
-                    .addListener(this::zipFocusChanged);
+                    .addListener(this::handlerZipFocusChanged);
             tfCity.focusedProperty()
-                    .addListener(this::cityFocusChanged);
+                    .addListener(this::handlerCityFocusChanged);
             tfState.focusedProperty()
-                    .addListener(this::stateFocusChanged);
+                    .addListener(this::handlerStateFocusChanged);
+
             tfStreet.focusedProperty()
-                    .addListener(this::streetFocusChanged);
+                    .addListener(this::handlerStreetFocusChanged);
+
             pfPass.focusedProperty()
-                    .addListener(this::passwordFocusChanged);
-            pfConfirmPass.textProperty().addListener(this::confirmPassChanged);
+                    .addListener(this::handlerPasswordFocusChanged);
+            pfConfirmPass.textProperty().addListener(this::handlerConfirmPassChanged);
 
             //Asociar manjeadores a eventos
             btnBack.setOnAction(this::handleExitOnAction);
@@ -157,22 +179,35 @@ public class GestionUsuariosController {
     }
 
     /**
+     * Maneja el evento de clic en el hipervínculo "Sign In".
      *
      * @param event
      */
     private void handleOnClickLink(ActionEvent event) {
+        try {
+            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+            alert.setContentText("Are you sure you want to exit, all changes will delete");
+            alert.showAndWait();
+            LOGGER.info("volviendo a la pagina de Sign In");
 
-        LOGGER.info("volviendo a la pagina de Sign In");
+        } catch (Exception e) {
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setContentText(e.getMessage());
+            alert.showAndWait();
+        }
 
     }
 
     /**
+     * Valida el campo Street cuando pierde el foco (on-blur). Comprueba que el
+     * campo no esté vacío. Llama a checkFields() para actualizar el estado del
+     * botón de registro.
      *
      * @param observable
      * @param oldValue
      * @param newValue
      */
-    private void streetFocusChanged(ObservableValue observable, Boolean oldValue, Boolean newValue) {
+    private void handlerStreetFocusChanged(ObservableValue observable, Boolean oldValue, Boolean newValue) {
         try {
             if (!newValue) {
                 String streer = tfStreet.getText().trim();
@@ -183,48 +218,61 @@ public class GestionUsuariosController {
             }
         } catch (Exception e) {
             showErrorLabel(e.getMessage(), streetMessage, tfStreet);
+        } finally {
+            checkFields();
         }
     }
 
     /**
+     * Valida el campo "Confirmar Contraseña" *mientras se escribe*
+     * (on-text-change). Comprueba que no esté vacío y que coincida con el campo
+     * de contraseña. Llama a checkFields() para actualizar el estado del botón
+     * de registro.
      *
      * @param observable
      * @param oldValue
      * @param newValue
      */
-    private void confirmPassChanged(ObservableValue observable, Object oldValue, Object newValue) {
+    private void handlerConfirmPassChanged(ObservableValue observable, Object oldValue, Object newValue) {
 
         try {
             String confirmPass = pfConfirmPass.getText();
             String thisPass = pfPass.getText();
 
-            // 1. Validación de Existencia
+            // Validación si no esta  vacio
             if (confirmPass.isEmpty()) {
                 throw new Exception("The field must be informed");
             }
 
-            // 2. Validación de Coincidencia
+            // Valida si las contraseñas son la mismas
             if (!thisPass.equals(confirmPass)) {
                 throw new Exception("The password doesn't match");
             }
 
-            // Si es válido: Limpiar error y borde
+            // Si es válido mostrar label de confirmacion
             showCheckLabel(confirmPassMessage, pfConfirmPass);
 
         } catch (Exception e) {
-            // Si falla: Mostrar error y borde
+            // Si falla mostra label de error
             showErrorLabel(e.getMessage(), confirmPassMessage, pfConfirmPass);
+        } finally {
+
+            //Siempre checkear los campos para habilitar el boton o no
+            checkFields();
         }
 
     }
 
     /**
+     * Valida el campo Password cuando pierde el foco (on-blur). Comprueba que
+     * no esté vacío, que cumpla la longitud y el formato REGEX. Llama a
+     * checkFields() para actualizar el estado del botón de registro.
      *
      * @param observable
      * @param oldValue
      * @param newValue
      */
-    private void passwordFocusChanged(ObservableValue observable, Boolean oldValue, Boolean newValue) {
+    private void handlerPasswordFocusChanged(ObservableValue observable, Boolean oldValue, Boolean newValue) {
 
         try {
             if (!newValue) {
@@ -244,17 +292,23 @@ public class GestionUsuariosController {
                 showCheckLabel(passwordMessage, pfPass);
             }
         } catch (Exception e) {
+            LOGGER.info("Error in password");
             showErrorLabel(e.getMessage(), passwordMessage, pfPass);
+        } finally {
+            checkFields();
         }
     }
 
     /**
+     * Valida el campo City cuando pierde el foco (on-blur). Comprueba que el
+     * campo no esté vacío. Llama a checkFields() para actualizar el estado del
+     * botón de registro.
      *
      * @param observable
      * @param oldValue
      * @param newValue
      */
-    private void cityFocusChanged(ObservableValue observable, Boolean oldValue, Boolean newValue) {
+    private void handlerCityFocusChanged(ObservableValue observable, Boolean oldValue, Boolean newValue) {
 
         try {
             if (!newValue) {
@@ -266,17 +320,22 @@ public class GestionUsuariosController {
             }
         } catch (IllegalStateException e) {
             showErrorLabel(e.getMessage(), cityMessage, tfCity);
+        } finally {
+            checkFields();
         }
 
     }
 
     /**
+     * Valida el campo State cuando pierde el foco (on-blur). Comprueba que el
+     * campo no esté vacío. Llama a checkFields() para actualizar el estado del
+     * botón de registro.
      *
      * @param observable
      * @param oldValue
      * @param newValue
      */
-    private void stateFocusChanged(ObservableValue observable, Boolean oldValue, Boolean newValue) {
+    private void handlerStateFocusChanged(ObservableValue observable, Boolean oldValue, Boolean newValue) {
         try {
             String state = tfState.getText().trim().toUpperCase();
             if (!newValue) {
@@ -288,16 +347,22 @@ public class GestionUsuariosController {
 
         } catch (Exception e) {
             showErrorLabel(e.getMessage(), stateMessage, tfState);
+        } finally {
+            checkFields();
         }
     }
 
     /**
+     * Valida el campo Zip Code cuando pierde el foco (on-blur). Comprueba que
+     * no esté vacío y que tenga la longitud de 6 dígitos. Llama a checkFields()
+     * para actualizar el estado del botón de registro.
+     *
      *
      * @param observable
      * @param oldValue
      * @param newValue
      */
-    private void zipFocusChanged(ObservableValue observable, Boolean oldValue, Boolean newValue) {
+    private void handlerZipFocusChanged(ObservableValue observable, Boolean oldValue, Boolean newValue) {
 
         try {
             if (!newValue) {
@@ -314,17 +379,22 @@ public class GestionUsuariosController {
             }
         } catch (Exception num) {
             showErrorLabel(num.getMessage(), zipMessage, tfZip);
+        } finally {
+            checkFields();
         }
 
     }
 
     /**
+     * Valida el campo Phone cuando pierde el foco (on-blur). Comprueba que no
+     * esté vacío y que tenga la longitud de 9 dígitos. Llama a checkFields()
+     * para actualizar el estado del botón de registro.
      *
      * @param observable
      * @param oldValue
      * @param newValue
      */
-    private void phoneFocusChanged(ObservableValue observable, Boolean oldValue, Boolean newValue) {
+    private void handlerPhoneFocusChanged(ObservableValue observable, Boolean oldValue, Boolean newValue) {
 
         try {
             if (!newValue) {
@@ -344,17 +414,22 @@ public class GestionUsuariosController {
 
         } catch (Exception num) {
             showErrorLabel(num.getMessage(), phoneMessage, tfPhone);
+        } finally {
+            checkFields();
         }
 
     }
 
     /**
+     * Valida el campo Middle Name cuando pierde el foco (on-blur). Comprueba
+     * que no esté vacío, que sea una sola letra y que cumpla el REGEX. Llama a
+     * checkFields() para actualizar el estado del botón de registro.
      *
      * @param observable
      * @param oldValue
      * @param newValue
      */
-    private void midNameFocusChanged(ObservableValue observable, Boolean oldValue, Boolean newValue) {
+    private void handlerMidNameFocusChanged(ObservableValue observable, Boolean oldValue, Boolean newValue) {
 
         try {
             String midName = tfMiddleName.getText().toUpperCase().trim();
@@ -372,17 +447,22 @@ public class GestionUsuariosController {
             }
         } catch (Exception e) {
             showErrorLabel(e.getMessage(), midNameMessage, tfMiddleName);
+        } finally {
+            checkFields();
         }
 
     }
 
     /**
+     * Valida el campo Last Name cuando pierde el foco (on-blur). Comprueba que
+     * no esté vacío y que cumpla el formato REGEX (solo letras). Llama a
+     * checkFields() para actualizar el estado del botón de registro.
      *
      * @param observable
      * @param oldValue
      * @param newValue
      */
-    private void lastNameFocusChanged(ObservableValue observable, Boolean oldValue, Boolean newValue) {
+    private void handlerLastNameFocusChanged(ObservableValue observable, Boolean oldValue, Boolean newValue) {
 
         try {
             if (!newValue) {
@@ -397,17 +477,22 @@ public class GestionUsuariosController {
             }
         } catch (Exception e) {
             showErrorLabel(e.getMessage(), lastNameMessage, tfLastName);
+        } finally {
+            checkFields();
         }
 
     }
 
     /**
+     * Valida el campo First Name cuando pierde el foco (on-blur). Comprueba que
+     * no esté vacío y que cumpla el formato REGEX (solo letras). Llama a
+     * checkFields() para actualizar el estado del botón de registro.
      *
      * @param observable
      * @param oldValue
      * @param newValue
      */
-    private void nameFocusChanged(ObservableValue observable, Boolean oldValue, Boolean newValue) {
+    private void handlerNameFocusChanged(ObservableValue observable, Boolean oldValue, Boolean newValue) {
 
         try {
             if (!newValue) {
@@ -422,20 +507,25 @@ public class GestionUsuariosController {
             }
         } catch (Exception name) {
             showErrorLabel(name.getMessage(), nameMessage, tfFirstName);
+        } finally {
+            checkFields();
         }
     }
 
     /**
+     * Valida el campo Email cuando pierde el foco (on-blur). Comprueba que no
+     * esté vacío, que cumpla la longitud y el formato REGEX. Llama a
+     * checkFields() para actualizar el estado del botón de registro.
      *
      * @param observable
      * @param oldValue
      * @param newValue
      */
-    private void emailfocusChanged(ObservableValue observable, Boolean oldValue, Boolean newValue) {
+    private void handlerEmailfocusChanged(ObservableValue observable, Boolean oldValue, Boolean newValue) {
 
         try {
             if (!newValue) {
-                LOGGER.info("Validando");
+                LOGGER.info("Focus textfield email");
                 String emailText = tfEmail.getText().trim();
                 //Validar que el campo no este vacio 
                 if (emailText.isEmpty()) {
@@ -454,52 +544,76 @@ public class GestionUsuariosController {
                 showCheckLabel(emailMessage, tfEmail);
             }
         } catch (Exception e) {
+            LOGGER.info(e.getMessage());
             showErrorLabel(e.getMessage(), emailMessage, tfEmail);
 
+        } finally {
+            checkFields();
         }
 
     }
 
     /**
+     * Maneja el evento de clic del botón "Sign Up" (Registrarse). Este método
+     * solo se ejecuta si el botón está habilitado (formulario válido). Muestra
+     * una alerta de confirmación antes de proceder con el registro.
      *
      * @param event
      */
     private void handleOnSignUpAction(ActionEvent event) {
+        try {
+            LOGGER.info("Button pressed");
+            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+            alert.setContentText("Are you sure you want to register?");
+            Optional<ButtonType> btnType = alert.showAndWait();
 
+            if (btnType.isPresent() && btnType.get() == ButtonType.OK) {
+                //Logica para registrar al usuario
+                LOGGER.info("USER registered");
+            }
+
+        } catch (Exception e) {
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setContentText(e.getMessage());
+            alert.showAndWait();
+
+        }
     }
 
     /**
+     * Método de utilidad para mostrar un mensaje de error de validación. Pone
+     * el texto de la etiqueta y el borde del campo en color rojo.
      *
-     * @param event
+     * @param event Metodo manejador del boton de back
      */
     private void handleExitOnAction(ActionEvent event) {
 
         try {
 
-            Alert alert = new Alert(Alert.AlertType.CONFIRMATION,
-                    "Are you sure you want to exit?",
-                    ButtonType.OK,
-                    ButtonType.CANCEL);
+            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+            alert.setTitle("Exit dialogue");
+            alert.setHeaderText("Confirm exit");
+            alert.setContentText("Are you sure you want to exit?");
 
             Optional<ButtonType> btnType = alert.showAndWait();
-            if (btnType.isPresent()) {
-                ButtonType btnOk = btnType.get();
-                if (btnOk.equals(ButtonType.OK)) {
-                    LOGGER.info("Cerrando programa");
-                    //Platform.exit(); --> Posible solucion para cerrar la ventana pero cierra toda la app
-                }
+
+            if (btnType.isPresent() && btnType.get() == ButtonType.CANCEL) {
+                LOGGER.info("Cerrando programa");
+                //Platform.exit(); --> Posible solucion para cerrar la ventana pero cierra toda la app
             }
+
         } catch (Exception e) {
 
         }
     }
 
     /**
-     * Utility method for showing messages.
+     * Método de utilidad para mostrar un mensaje de error de validación. Pone
+     * el texto de la etiqueta y el borde del campo en color rojo.
      *
      * @param erroMsg
      * @param label
-     * @param textField
+     * @param textField Metodo para mostrar label de campo invalido o con error
      */
     protected void showErrorLabel(String erroMsg, Label label, TextField textField) {
 
@@ -511,9 +625,11 @@ public class GestionUsuariosController {
     }
 
     /**
+     * Método de utilidad para mostrar un mensaje de éxito de validación.
+     * Muestra un "check" (✔) y pone el texto y el borde del campo en verde.
      *
      * @param label
-     * @param textField
+     * @param textField Metodo para mostrar label de campo valido
      */
     protected void showCheckLabel(Label label, TextField textField) {
         label.setVisible(true);
@@ -522,8 +638,13 @@ public class GestionUsuariosController {
         textField.setStyle("-fx-border-color: green");
     }
 
+    /**
+     *
+     * @return Este metodo devuelve una lista de todos los TextFields para
+     * comodidad en su acceso
+     */
     private List<TextField> fieldsList() {
-
+        //Listado de todos textFields 
         List<TextField> fields = new ArrayList<>();
 
         fields.add(tfZip);
@@ -539,6 +660,29 @@ public class GestionUsuariosController {
         fields.add(pfPass);
 
         return fields;
+
+    }
+
+    /**
+     * Método central de control del botón de registro. Itera sobre todos los
+     * campos del formulario (de fieldsList()). Deshabilita el botón si
+     * CUALQUIER campo está vacío o tiene un borde rojo (inválido). Habilita el
+     * botón solo si TODOS los campos están llenos y son válidos.
+     */
+    private void checkFields() {
+
+        for (TextField tf : fieldsList()) {
+            if (tf.getText().trim().isEmpty()) {
+                btnSignUp.setDisable(true);
+                return;
+            }
+
+            if (tf.getStyle() != null && tf.getStyle().contains("-fx-border-color: red")) {
+                btnSignUp.setDisable(true);
+                return;
+            }
+        }
+        btnSignUp.setDisable(false);
 
     }
 
