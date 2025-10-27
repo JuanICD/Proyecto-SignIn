@@ -24,10 +24,6 @@ import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 
-import proyectosignin.exceptions.InvalidLastNameException;
-import proyectosignin.exceptions.InvalidNameException;
-import proyectosignin.exceptions.InvalidMidNameException;
-
 import javafx.stage.Stage;
 
 /**
@@ -92,7 +88,6 @@ public class GestionUsuariosController {
     private static final String REGEX_NAME = "^[A-Za-z ]+$";
     private static final String REGEX_EMAIL = "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$";
     private static final String REGEX_PASSWORD = "^(?=.*[A-Z])(?=.*[0-9])(?=.*[\\W_])(?=.{8,}).*$";
-    private static final String REGEX_PHONE = "^\\d{9}$";
 
     /**
      *
@@ -141,11 +136,12 @@ public class GestionUsuariosController {
                     .addListener(this::streetFocusChanged);
             pfPass.focusedProperty()
                     .addListener(this::passwordFocusChanged);
-            pfConfirmPass.focusedProperty().addListener(this::confirmPassFocusChanged);
+            pfConfirmPass.textProperty().addListener(this::confirmPassChanged);
 
             //Asociar manjeadores a eventos
             btnBack.setOnAction(this::handleExitOnAction);
             btnSignUp.setOnAction(this::handleOnSignUpAction);
+            hyperLink.setOnAction(this::handleOnClickLink);
 
             //Mostrar la ventana 
             stage.show();
@@ -160,6 +156,22 @@ public class GestionUsuariosController {
 
     }
 
+    /**
+     *
+     * @param event
+     */
+    private void handleOnClickLink(ActionEvent event) {
+
+        LOGGER.info("volviendo a la pagina de Sign In");
+
+    }
+
+    /**
+     *
+     * @param observable
+     * @param oldValue
+     * @param newValue
+     */
     private void streetFocusChanged(ObservableValue observable, Boolean oldValue, Boolean newValue) {
         try {
             if (!newValue) {
@@ -167,39 +179,51 @@ public class GestionUsuariosController {
                 if (streer.isEmpty()) {
                     throw new Exception("This field must be informed");
                 }
-                showCheckLabel(streetMessage);
+                showCheckLabel(streetMessage, tfStreet);
             }
         } catch (Exception e) {
-            showErrorLabel(e.getMessage(), streetMessage);
+            showErrorLabel(e.getMessage(), streetMessage, tfStreet);
         }
     }
 
-    private void confirmPassFocusChanged(ObservableValue observable, Boolean oldValue, Boolean newValue) {
+    /**
+     *
+     * @param observable
+     * @param oldValue
+     * @param newValue
+     */
+    private void confirmPassChanged(ObservableValue observable, Object oldValue, Object newValue) {
 
         try {
-            if (!newValue) {
-                String confirmPass = pfConfirmPass.getText();
-                String thisPass = pfPass.getText();
-                //Habilitar boton de sign-up
-                if (confirmPass.isEmpty()) {
-                    throw new Exception("The field must be informed");
-                }
-                if (!thisPass.equals(confirmPass)) {
-                    throw new Exception("The passwod doesn't match");
-                }
-                for (TextField textField : fieldsList()) {
-                    if (textField.getText().isEmpty()) {
-                        btnSignUp.setDisable(true);
-                    }
-                    btnSignUp.setDisable(false);
-                }
-                showCheckLabel(confirmPassMessage);
+            String confirmPass = pfConfirmPass.getText();
+            String thisPass = pfPass.getText();
+
+            // 1. Validación de Existencia
+            if (confirmPass.isEmpty()) {
+                throw new Exception("The field must be informed");
             }
+
+            // 2. Validación de Coincidencia
+            if (!thisPass.equals(confirmPass)) {
+                throw new Exception("The password doesn't match");
+            }
+
+            // Si es válido: Limpiar error y borde
+            showCheckLabel(confirmPassMessage, pfConfirmPass);
+
         } catch (Exception e) {
-            showErrorLabel(e.getMessage(), confirmPassMessage);
+            // Si falla: Mostrar error y borde
+            showErrorLabel(e.getMessage(), confirmPassMessage, pfConfirmPass);
         }
+
     }
 
+    /**
+     *
+     * @param observable
+     * @param oldValue
+     * @param newValue
+     */
     private void passwordFocusChanged(ObservableValue observable, Boolean oldValue, Boolean newValue) {
 
         try {
@@ -217,13 +241,19 @@ public class GestionUsuariosController {
                 if (password.length() < 8) {
                     throw new IllegalArgumentException("The password is too short");
                 }
-                showCheckLabel(passwordMessage);
+                showCheckLabel(passwordMessage, pfPass);
             }
         } catch (Exception e) {
-            showErrorLabel(e.getMessage(), passwordMessage);
+            showErrorLabel(e.getMessage(), passwordMessage, pfPass);
         }
     }
 
+    /**
+     *
+     * @param observable
+     * @param oldValue
+     * @param newValue
+     */
     private void cityFocusChanged(ObservableValue observable, Boolean oldValue, Boolean newValue) {
 
         try {
@@ -232,14 +262,20 @@ public class GestionUsuariosController {
                 if (city.isEmpty()) {
                     throw new IllegalStateException("The field must be informed");
                 }
-                showCheckLabel(cityMessage);
+                showCheckLabel(cityMessage, tfCity);
             }
         } catch (IllegalStateException e) {
-            showErrorLabel(e.getMessage(), cityMessage);
+            showErrorLabel(e.getMessage(), cityMessage, tfCity);
         }
 
     }
 
+    /**
+     *
+     * @param observable
+     * @param oldValue
+     * @param newValue
+     */
     private void stateFocusChanged(ObservableValue observable, Boolean oldValue, Boolean newValue) {
         try {
             String state = tfState.getText().trim().toUpperCase();
@@ -247,14 +283,20 @@ public class GestionUsuariosController {
                 if (state.isEmpty()) {
                     throw new Exception("The field must be informed");
                 }
-                showCheckLabel(stateMessage);
+                showCheckLabel(stateMessage, tfState);
             }
 
         } catch (Exception e) {
-            showErrorLabel(e.getMessage(), stateMessage);
+            showErrorLabel(e.getMessage(), stateMessage, tfState);
         }
     }
 
+    /**
+     *
+     * @param observable
+     * @param oldValue
+     * @param newValue
+     */
     private void zipFocusChanged(ObservableValue observable, Boolean oldValue, Boolean newValue) {
 
         try {
@@ -265,17 +307,23 @@ public class GestionUsuariosController {
                 if (zip.isEmpty()) {
                     throw new Exception("This field must be informed");
                 }
-                if (zip.length() != 5) {
+                if (zip.length() != 6) {
                     throw new IllegalArgumentException("Zip length must be 6 digits");
                 }
-                showCheckLabel(zipMessage);
+                showCheckLabel(zipMessage, tfZip);
             }
         } catch (Exception num) {
-            showErrorLabel(num.getMessage(), zipMessage);
+            showErrorLabel(num.getMessage(), zipMessage, tfZip);
         }
 
     }
 
+    /**
+     *
+     * @param observable
+     * @param oldValue
+     * @param newValue
+     */
     private void phoneFocusChanged(ObservableValue observable, Boolean oldValue, Boolean newValue) {
 
         try {
@@ -291,72 +339,98 @@ public class GestionUsuariosController {
                     throw new Exception("Phone length must be 9 digits");
                 }
 
-                showCheckLabel(phoneMessage);
+                showCheckLabel(phoneMessage, tfPhone);
             }
 
         } catch (Exception num) {
-            showErrorLabel(num.getMessage(), phoneMessage);
+            showErrorLabel(num.getMessage(), phoneMessage, tfPhone);
         }
 
     }
-//TODO lanzar excepciones si el campo esta vacio
 
+    /**
+     *
+     * @param observable
+     * @param oldValue
+     * @param newValue
+     */
     private void midNameFocusChanged(ObservableValue observable, Boolean oldValue, Boolean newValue) {
 
         try {
             String midName = tfMiddleName.getText().toUpperCase().trim();
             if (!newValue) {
                 if (midName.isEmpty()) {
-                    throw new InvalidMidNameException("This field must be informed");
+                    throw new Exception("This field must be informed");
+                }
+                if (midName.length() != 1) {
+                    throw new Exception("The mid name must be 1 letter");
                 }
                 if (!midName.matches(REGEX_NAME)) {
-                    throw new InvalidMidNameException("Format mid name invalid");
+                    throw new Exception("Format mid name invalid");
                 }
-                showCheckLabel(midNameMessage);
+                showCheckLabel(midNameMessage, tfMiddleName);
             }
-        } catch (InvalidMidNameException e) {
-            showErrorLabel(e.getMessage(), midNameMessage);
+        } catch (Exception e) {
+            showErrorLabel(e.getMessage(), midNameMessage, tfMiddleName);
         }
 
     }
 
+    /**
+     *
+     * @param observable
+     * @param oldValue
+     * @param newValue
+     */
     private void lastNameFocusChanged(ObservableValue observable, Boolean oldValue, Boolean newValue) {
 
         try {
             if (!newValue) {
                 String lastName = tfLastName.getText().toUpperCase().trim();
                 if (lastName.isEmpty()) {
-                    throw new InvalidLastNameException("This field must be informed");
+                    throw new Exception("This field must be informed");
                 }
                 if (!lastName.matches(REGEX_NAME)) {
-                    throw new InvalidLastNameException("Format last name invalid");
+                    throw new Exception("Format last name invalid");
                 }
-                showCheckLabel(lastNameMessage);
+                showCheckLabel(lastNameMessage, tfLastName);
             }
-        } catch (InvalidLastNameException e) {
-            showErrorLabel(e.getMessage(), lastNameMessage);
+        } catch (Exception e) {
+            showErrorLabel(e.getMessage(), lastNameMessage, tfLastName);
         }
 
     }
 
+    /**
+     *
+     * @param observable
+     * @param oldValue
+     * @param newValue
+     */
     private void nameFocusChanged(ObservableValue observable, Boolean oldValue, Boolean newValue) {
 
         try {
             if (!newValue) {
                 String fName = tfFirstName.getText().toUpperCase().trim();
                 if (fName.isEmpty()) {
-                    throw new InvalidNameException("This field must be informed");
+                    throw new Exception("This field must be informed");
                 }
                 if (!fName.matches(REGEX_NAME)) {
-                    throw new InvalidNameException("Format name invalid");
+                    throw new Exception("Format name invalid");
                 }
-                showCheckLabel(nameMessage);
+                showCheckLabel(nameMessage, tfFirstName);
             }
-        } catch (InvalidNameException name) {
-            showErrorLabel(name.getMessage(), nameMessage);
+        } catch (Exception name) {
+            showErrorLabel(name.getMessage(), nameMessage, tfFirstName);
         }
     }
 
+    /**
+     *
+     * @param observable
+     * @param oldValue
+     * @param newValue
+     */
     private void emailfocusChanged(ObservableValue observable, Boolean oldValue, Boolean newValue) {
 
         try {
@@ -377,20 +451,27 @@ public class GestionUsuariosController {
                     throw new Exception("Invalid email format");
                 }
                 //Si el campo es válido, mostrar etiqueta asociada al campo con mensaje de validación correcta  
-                showCheckLabel(emailMessage);
+                showCheckLabel(emailMessage, tfEmail);
             }
         } catch (Exception e) {
-            showErrorLabel(e.getMessage(), emailMessage);
+            showErrorLabel(e.getMessage(), emailMessage, tfEmail);
 
         }
 
     }
 
+    /**
+     *
+     * @param event
+     */
     private void handleOnSignUpAction(ActionEvent event) {
-        LOGGER.info("User register");
 
     }
 
+    /**
+     *
+     * @param event
+     */
     private void handleExitOnAction(ActionEvent event) {
 
         try {
@@ -418,19 +499,27 @@ public class GestionUsuariosController {
      *
      * @param erroMsg
      * @param label
+     * @param textField
      */
-    protected void showErrorLabel(String erroMsg, Label label) {
+    protected void showErrorLabel(String erroMsg, Label label, TextField textField) {
 
         label.setVisible(true);
         label.setText(erroMsg);
         label.setStyle("-fx-text-fill: red;");
+        textField.setStyle("-fx-border-color: red");
 
     }
 
-    protected void showCheckLabel(Label label) {
+    /**
+     *
+     * @param label
+     * @param textField
+     */
+    protected void showCheckLabel(Label label, TextField textField) {
         label.setVisible(true);
         label.setText("✔");
         label.setStyle("-fx-text-fill: green;");
+        textField.setStyle("-fx-border-color: green");
     }
 
     private List<TextField> fieldsList() {
@@ -446,6 +535,8 @@ public class GestionUsuariosController {
         fields.add(tfPhone);
         fields.add(tfState);
         fields.add(tfStreet);
+        fields.add(pfConfirmPass);
+        fields.add(pfPass);
 
         return fields;
 

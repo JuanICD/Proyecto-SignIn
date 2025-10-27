@@ -172,9 +172,9 @@
         <Label fx:id="streetMessage" alignment="CENTER" contentDisplay="CENTER" layoutX="797.0" layoutY="376.0" textAlignment="CENTER" textFill="#1fff48" visible="false" />
         <Label fx:id="stateMessage" alignment="CENTER" contentDisplay="CENTER" layoutX="796.0" layoutY="424.0" textAlignment="CENTER" textFill="#1fff48" visible="false" />
         <Label fx:id="zipMessage" alignment="CENTER" contentDisplay="CENTER" layoutX="797.0" layoutY="482.0" textAlignment="CENTER" textFill="#1fff48" visible="false" />  
-        <Label fx:id="passwordMessage" alignment="CENTER" layoutX="797.0" layoutY="533.0"  textAlignment="CENTER" textFill="#1fff48" visible="false" />
-        <Label fx:id="confirmPassMessage"  layoutX="798.0" layoutY="590.0" textFill="#1fff48" visible="false" />
-        <Label fx:id="cityMessage" alignment="CENTER" contentDisplay="CENTER" layoutX="21.0" layoutY="424.0" prefHeight="23.0" prefWidth="251.0" textAlignment="CENTER" textFill="#1fff48" />
+        <Label fx:id="passwordMessage" alignment="CENTER" layoutX="797.0" layoutY="533.0" textAlignment="CENTER" textFill="#1fff48" visible="false" />
+        <Label fx:id="confirmPassMessage" layoutX="798.0" layoutY="590.0" textFill="#1fff48" visible="false" />
+        <Label fx:id="cityMessage" alignment="CENTER_RIGHT" layoutX="21.0" layoutY="424.0" prefHeight="23.0" prefWidth="251.0" textFill="#1fff48" visible="false" />
         <Label fx:id="phoneMessage" alignment="CENTER_RIGHT" layoutX="12.0" layoutY="482.0" prefHeight="17.0" prefWidth="265.0" text=" " visible="false" />
        
     </children>
