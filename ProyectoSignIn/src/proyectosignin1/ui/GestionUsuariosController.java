@@ -77,17 +77,6 @@ public class GestionUsuariosController {
             if(email.isEmpty() || passwd.isEmpty()){
                 throw new Exception("Email and password are required");
             }
-            // Comprobar credenciales ficticias
-            if(email.equals("user@example.com") && passwd.equals("1234")){
-                LOGGER.info("Credenciales correctas. Abriendo ventana principal...");
-                // Aquí se cargaría la ventana principal de la aplicación
-                Alert alert = new Alert(AlertType.INFORMATION, "Sign In correcto. Abriendo ventana principal...");
-                alert.showAndWait();
-                stage.close();
-            }else{
-                lbErrorSignIn.setText("Invalid credentials, please try again");
-                pfPasswd.clear();
-            }
         } catch (Exception e){
             Alert alert = new Alert(AlertType.ERROR, e.getMessage());
             alert.showAndWait();
@@ -99,7 +88,7 @@ public class GestionUsuariosController {
      */
 
     private void handleBtExitOnAction(ActionEvent event){
-        Alert confirm = new Alert(AlertType.CONFIRMATION, "Are you sure you want to exit?");
+        Alert confirm = new Alert(AlertType.CONFIRMATION, "Estas seguro que quieres salir?");
         Optional<ButtonType> result = confirm.showAndWait();
         if(result.isPresent() && result.get() == ButtonType.OK){
             stage.close();
@@ -111,25 +100,8 @@ public class GestionUsuariosController {
      */
     
     private void handleHlRegisterOnAction(ActionEvent event){
-        try {
-            LOGGER.info("Opening Register window...");
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("Register.fxml"));
-            Parent root = loader.load();
-            Stage newStage = new Stage();
-            newStage.setTitle("Sign Up");
-            newStage.setScene(new Scene(root));
-            newStage.show();
-            stage.close();
-        } catch (IOException ex) {
-            LOGGER.log(Level.SEVERE, "Error loading Register window", ex);
-        }
+        
     }
-    /**
-     * 
-     * @param observable
-     * @param oldValue
-     * @param newValue 
-     */
 
     private void handleTfUserTextChange(ObservableValue observable,String oldValue,String newValue){
         validateFields();
