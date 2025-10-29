@@ -47,24 +47,24 @@ public class GestionUsuariosController {
         this.stage = stage;
         Scene scene = new Scene(root);
         stage.setScene(scene);
-        // • Establecer el título de la ventana al valor "Sign In".
+        //Establecer el titulo de la ventana al valor "Sign In".
         stage.setTitle("Sign In");
-        // • La ventana no debe ser redimensionable.
+        //La ventana no debe ser redimensionable.
         stage.setResizable(false);
-        // • Deshabilitar temporalmente el botón Sign In hasta que ambos campos contengan texto.
+        //Deshabilitar temporalmente el boton Sign In hasta que ambos campos contengan texto.
         btSignIn.setDisable(true);
-        // • Asociar eventos a manejadores
+        //Asociar eventos a manejadores
         btSignIn.setOnAction(this::handleBtSignInOnAction);
         btExit.setOnAction(this::handleBtExitOnAction);
         hlRegister.setOnAction(this::handleHlRegisterOnAction);
         tfUser.textProperty().addListener(this::handleTfUserTextChange);
         pfPasswd.textProperty().addListener(this::handlePfPasswdTextChange);
         tfUser.focusedProperty().addListener(this::handleTfUserFocusChange);
-        // • Controlar cierre de ventana
+        //Controlar cierre de ventana
         stage.setOnCloseRequest(this::handleWindowCloseRequest);
-        // • Mostrar la ventana.
+        //Mostrar la ventana.
         stage.show();
-        // • Se enfoca en el campo Email
+        //Se enfoca en el campo Email
         tfUser.requestFocus();
     }
     private void handleBtSignInOnAction(ActionEvent event){
