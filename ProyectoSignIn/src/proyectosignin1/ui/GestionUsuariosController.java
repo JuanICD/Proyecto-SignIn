@@ -1,22 +1,26 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package proyectosignin1.ui;
 
+import java.io.IOException;
+import java.util.Optional;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.Hyperlink;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
+import java.util.regex.Pattern;
 
 /**
  * Controller class for user management windows
@@ -38,51 +42,122 @@ public class GestionUsuariosController {
     @FXML
     private Label lbErrorSignIn;
     private static final Logger LOGGER=Logger.getLogger("proyectosignin1.ui");
+    
+    private Stage stage;
 
     public void initStage(Stage stage,Parent root) {
         LOGGER.info("Initializing windows");
+        this.stage = stage;
         Scene scene = new Scene(root);
         stage.setScene(scene);
-//â€¢Establecer el tÃ­tulo de la ventana al valor "Sign In".
-    stage.setTitle("Sign In");
-//â€¢ La ventana no debe ser redimensionable.
-    stage.setResizable(false);
-//â€¢ Deshabilitar temporalmente el botÃ³n Sign In hasta que ambos campos contengan texto.
-    btSignIn.setDisable(true);
-//â€¢ Asociar eventos a manejadores
-    btSignIn.setOnAction(this::handleBtSignInOnAction);
-    btExit.setOnAction(this::handleBtExitOnAction);
-//â€¢ Mostrar la ventana.
+        // • Establecer el título de la ventana al valor "Sign In".
+        stage.setTitle("Sign In");
+        // • La ventana no debe ser redimensionable.
+        stage.setResizable(false);
+        // • Deshabilitar temporalmente el botón Sign In hasta que ambos campos contengan texto.
+        btSignIn.setDisable(true);
+        // • Asociar eventos a manejadores
+        btSignIn.setOnAction(this::handleBtSignInOnAction);
+        btExit.setOnAction(this::handleBtExitOnAction);
+        hlRegister.setOnAction(this::handleHlRegisterOnAction);
+        tfUser.textProperty().addListener(this::handleTfUserTextChange);
+        pfPasswd.textProperty().addListener(this::handlePfPasswdTextChange);
+        tfUser.focusedProperty().addListener(this::handleTfUserFocusChange);
+        // • Controlar cierre de ventana
+        stage.setOnCloseRequest(this::handleWindowCloseRequest);
+        // • Mostrar la ventana.
         stage.show();
-//â€¢Se enfoca en el campo Email
-    tfUser.textProperty().addListener(this::handleTfUserTextChange);
-    tfUser.focusedProperty().addListener(this::handleTfUserFocusChange);
+        // • Se enfoca en el campo Email
+        tfUser.requestFocus();
     }
     private void handleBtSignInOnAction(ActionEvent event){
-    
+        try {
+            String email = tfUser.getText();
+            String passwd = pfPasswd.getText();
+            if(email.isEmpty() || passwd.isEmpty()){
+                throw new Exception("Email and password are required");
+            }
+            // Comprobar credenciales ficticias
+            if(email.equals("user@example.com") && passwd.equals("1234")){
+                LOGGER.info("Credenciales correctas. Abriendo ventana principal...");
+                // Aquí se cargaría la ventana principal de la aplicación
+                Alert alert = new Alert(AlertType.INFORMATION, "Sign In correcto. Abriendo ventana principal...");
+                alert.showAndWait();
+                stage.close();
+            }else{
+                lbErrorSignIn.setText("Invalid credentials, please try again");
+                pfPasswd.clear();
+            }
+        } catch (Exception e){
+            Alert alert = new Alert(AlertType.ERROR, e.getMessage());
+            alert.showAndWait();
+        }
     }
+
     private void handleBtExitOnAction(ActionEvent event){
-    
+        Alert confirm = new Alert(AlertType.CONFIRMATION, "Are you sure you want to exit?");
+        Optional<ButtonType> result = confirm.showAndWait();
+        if(result.isPresent() && result.get() == ButtonType.OK){
+            stage.close();
+        }
     }
-    /**
-     * 
-     * @param Obsarvable
-     * @param oldValue
-     * @param newValue 
-     */
-    private void handleTfUserTextChange(ObservableValue Obsarvable,String oldValue,String newValue){
-        
+
+    private void handleHlRegisterOnAction(ActionEvent event){
+        try {
+            LOGGER.info("Opening Register window...");
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("Register.fxml"));
+            Parent root = loader.load();
+            Stage newStage = new Stage();
+            newStage.setTitle("Sign Up");
+            newStage.setScene(new Scene(root));
+            newStage.show();
+            stage.close();
+        } catch (IOException ex) {
+            LOGGER.log(Level.SEVERE, "Error loading Register window", ex);
+        }
     }
-    /**
-     * 
-     * @param Obsarvable
-     * @param oldValue
-     * @param newValue 
-     */
-    private void handleTfUserFocusChange(ObservableValue Obsarvable,Boolean oldValue,Boolean newValue){
-    if(oldValue){
-    
+
+    private void handleTfUserTextChange(ObservableValue observable,String oldValue,String newValue){
+        validateFields();
+        // Validar formato de email
+        if(!newValue.isEmpty() && !isValidEmail(newValue)){
+            lbErrorEmail.setText("Invalid email format");
+        }else{
+            lbErrorEmail.setText("");
+        }
     }
+
+    private void handlePfPasswdTextChange(ObservableValue observable,String oldValue,String newValue){
+        validateFields();
     }
-    
+
+    private void handleTfUserFocusChange(ObservableValue observable,Boolean oldValue,Boolean newValue){
+        if(oldValue){
+            String email = tfUser.getText();
+            if(!email.isEmpty() && !isValidEmail(email)){
+                lbErrorEmail.setText("Invalid email format");
+            }else{
+                lbErrorEmail.setText("");
+            }
+        }
+    }
+
+    private void handleWindowCloseRequest(WindowEvent event){
+        Alert confirm = new Alert(AlertType.CONFIRMATION, "Are you sure you want to exit?");
+        Optional<ButtonType> result = confirm.showAndWait();
+        if(result.isPresent() && result.get() != ButtonType.OK){
+            event.consume();
+        }
+    }
+
+    private boolean isValidEmail(String email){
+        String regex = "^[A-Za-z0-9+_.-]+@(.+)$";
+        return Pattern.matches(regex, email);
+    }
+
+    private void validateFields(){
+        boolean disable = tfUser.getText().isEmpty() || pfPasswd.getText().isEmpty();
+        btSignIn.setDisable(disable);
+    }
 }
+
