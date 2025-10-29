@@ -20,7 +20,7 @@ public class SignInSignUpApplication extends Application {
 
     @Override
     public void start(Stage stage) throws Exception {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("ui/SigUP_View.fxml"));
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("ui/SignUP_View.fxml"));
         Parent root = (Parent) loader.load();
         GestionUsuariosController controller = loader.getController();
         controller.initStage(stage,root);

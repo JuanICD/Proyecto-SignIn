@@ -5,6 +5,7 @@
  */
 package proyectosignin.ui;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -13,6 +14,8 @@ import java.util.logging.Logger;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.Parent;
 import javafx.scene.control.Alert;
@@ -25,6 +28,9 @@ import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 
 import javafx.stage.Stage;
+import javax.ws.rs.InternalServerErrorException;
+import proyectosignin.logic.Customer;
+import proyectosignin.model.CustomerRESTCLient;
 
 /**
  * Controlador para la vista de registro de usuarios (Sign Up). Maneja la lógica
@@ -118,7 +124,6 @@ public class GestionUsuariosController {
             Scene scene = new Scene(root);
             //Asigno la hoja de estilos
             scene.getStylesheets().add(getClass().getResource("styleSheet.css").toExternalForm());
-
             stage.setScene(scene);
             //Deshabilitar el botón de Sign Up hasta que todos los campos estén rellenos 
             btnSignUp.setDisable(true);
@@ -168,7 +173,7 @@ public class GestionUsuariosController {
             //Mostrar la ventana 
             stage.show();
             //Centrar la ventana en la pantalla
-            stage.centerOnScreen();
+            //stage.centerOnScreen();
 
         } catch (Exception e) {
             String erroMsg = "Error opening window:\n" + e.getMessage();
@@ -185,12 +190,19 @@ public class GestionUsuariosController {
      */
     private void handleOnClickLink(ActionEvent event) {
         try {
-            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+            /*Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
             alert.setContentText("Are you sure you want to exit, all changes will delete");
             alert.showAndWait();
             LOGGER.info("volviendo a la pagina de Sign In");
+            */
+            
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("SignInFX.fxml"));
+            Parent root = loader.load();
+            Scene scene = ((Node)event.getSource()).getScene();
+            scene.setRoot(root);
+            
 
-        } catch (Exception e) {
+        } catch (IOException e) {
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
             alert.setContentText(e.getMessage());
             alert.showAndWait();
@@ -562,6 +574,14 @@ public class GestionUsuariosController {
      */
     private void handleOnSignUpAction(ActionEvent event) {
         try {
+            
+            //Crear objeto customer
+            Customer customer = new Customer();
+            customer.setFirstName("");
+            new CustomerRESTCLient().create_XML(customer);
+            //Indicar al usuario que se ha registrado correctamente
+            
+            
             LOGGER.info("Button pressed");
             Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
             alert.setContentText("Are you sure you want to register?");
@@ -572,11 +592,11 @@ public class GestionUsuariosController {
                 LOGGER.info("USER registered");
             }
 
-        } catch (Exception e) {
-            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        } catch (InternalServerErrorException e) {
+            /*Alert alert = new Alert(Alert.AlertType.INFORMATION);
             alert.setContentText(e.getMessage());
             alert.showAndWait();
-
+            */
         }
     }
 
