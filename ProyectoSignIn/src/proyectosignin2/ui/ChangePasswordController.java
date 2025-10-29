@@ -18,11 +18,26 @@ import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.stage.Stage;
 
+//package proyectosignin2.ui;
+
+import java.util.logging.Logger;
+import javafx.beans.value.ObservableValue;
+import javafx.event.ActionEvent;
+import javafx.fxml.FXML;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.PasswordField;
+import javafx.stage.Stage;
+
 /**
- *
+ * Controlador para el cambio de contraseña.
  * @author puchol
  */
 public class ChangePasswordController {
+
     @FXML
     private PasswordField currentPassword;
     @FXML
@@ -39,101 +54,159 @@ public class ChangePasswordController {
     private Label error2;
     @FXML
     private Label error3;
-    
-    private static final Logger LOGGER=Logger.getLogger("proyectosignin2.ui");
 
-    public void init(Stage stage,Parent root) {
-    LOGGER.info("Initializing login");
-    Scene scene = new Scene(root);  
-    stage.setScene(scene);
-    
-    //Establecer el título de la ventana
-    stage.setTitle("Change Password");
-    
-    //La ventana no debe ser redimensionable
-    stage.setResizable(false);
-    
-    //El boton back estara habilitado
-    
-    //El boton aplicar y salir estara deshabilitado    
-    applyExit.setDisable(true);
-    
-    //Asociar eventos a manejadores    
-    applyExit.setOnAction(this::handleApplyExitOnAction);
-    back.setOnAction(this::handleBackOnAction);
-    
-    //Asociación de manejadores a properties
-    currentPassword.textProperty().addListener(this::handleCurrentPassword);
-    newPassword.textProperty().addListener(this::handleNewPassword);
-    repeatNewPassword.textProperty().addListener(this::handleRepeatNewPassword);
-    
-    //Mostrar la ventana
-    stage.show();
+    private static final Logger LOGGER = Logger.getLogger("ui/proyectosignin2.ui");
 
+    private static final String USER_CURRENT_PASSWORD = "12345";
+
+    public void init(Stage stage, Parent root) {
+        LOGGER.info("Initializing Change Password window");
+        Scene scene = new Scene(root);
+        stage.setScene(scene);
+        stage.setTitle("Change Password");
+        stage.setResizable(false);
+
+        applyExit.setDisable(true);
+
+        // Asociar eventos a botones
+        applyExit.setOnAction(this::handleApplyExitOnAction);
+        back.setOnAction(this::handleBackOnAction);
+
+        // Asociar validaciones a los campos
+        currentPassword.textProperty().addListener(this::handleCurrentPassword);
+        newPassword.textProperty().addListener(this::handleNewPassword);
+        repeatNewPassword.textProperty().addListener(this::handleRepeatNewPassword);
+
+        stage.show();
     }
-/**
- * 
- * @param observable
- * @param oldValue
- * @param newValue 
- */    
-private void handleCurrentPassword(ObservableValue observable,
-                                      String oldValue,
-                                      String newValue){
+
+    // VALIDACIONES CON TRY / CATCH
+
+    private void handleCurrentPassword(ObservableValue observable, String oldValue, String newValue) {
+        try {
+            validarContraseñaActual(newValue);
+            error1.setText("");
+        } catch (ValidationException e) {
+            error1.setText(e.getMessage());
+        } finally {
+            checkAllValid();
+        }
+    }
+
+    private void handleNewPassword(ObservableValue observable, String oldValue, String newValue) {
+        try {
+            validarNuevaContraseña(newValue);
+            error2.setText("");
+        } catch (ValidationException e) {
+            error2.setText(e.getMessage());
+        } finally {
+            checkAllValid();
+        }
+    }
+
+    private void handleRepeatNewPassword(ObservableValue observable, String oldValue, String newValue) {
+        try {
+            validarRepetición(newPassword.getText(), newValue);
+            error3.setText("");
+        } catch (ValidationException e) {
+            error3.setText(e.getMessage());
+        } finally {
+            checkAllValid();
+        }
+    }
+
+    // MÉTODOS DE VALIDACIÓN
+
+    private void validarContraseñaActual(String password) throws ValidationException {
+        if (password.isEmpty()) {
+            throw new ValidationException("La contraseña actual no puede estar vacía.");
+        }
+        if (!password.equals(USER_CURRENT_PASSWORD)) {
+            throw new ValidationException("La contraseña actual es incorrecta.");
+        }
+    }
+
+    private void validarNuevaContraseña(String password) throws ValidationException {
+        if (password.isEmpty()) {
+            throw new ValidationException("La nueva contraseña no puede estar vacía.");
+        }
+        if (password.length() < 8) {
+            throw new ValidationException("Debe tener al menos 8 caracteres.");
+        }
+        if (!password.matches(".*[A-Z].*")) {
+            throw new ValidationException("Debe contener al menos una mayúscula.");
+        }
+        if (!password.matches(".*\\d.*")) {
+            throw new ValidationException("Debe contener al menos un número.");
+        }
+        if (password.equals(USER_CURRENT_PASSWORD)) {
+            throw new ValidationException("La nueva contraseña no puede ser igual a la actual.");
+        }
+    }
+
+    private void validarRepetición(String nueva, String repetida) throws ValidationException {
+        if (repetida.isEmpty()) {
+            throw new ValidationException("Debe repetir la nueva contraseña.");
+        }
+        if (!repetida.equals(nueva)) {
+            throw new ValidationException("Las contraseñas no coinciden.");
+        }
+    }
+
     
+    // HABILITAR / DESHABILITAR BOTÓN
     
-}
-/**
- * 
- * @param observable
- * @param oldValue
- * @param newValue 
- */
-private void handleCurrentPasswordFocusChange(ObservableValue observable,
-                                      Boolean oldValue,
-                                      Boolean newValue){
-    if(oldValue){
-    
-    }   
-}
-/**
- * 
- * @param observable
- * @param oldValue
- * @param newValue 
- */
-private void handleNewPassword(ObservableValue observable,
-                                      String oldValue,
-                                      String newValue){
 
+    private void checkAllValid() {
+        boolean valid =
+                error1.getText().isEmpty() &&
+                error2.getText().isEmpty() &&
+                error3.getText().isEmpty() &&
+                !currentPassword.getText().isEmpty() &&
+                !newPassword.getText().isEmpty() &&
+                !repeatNewPassword.getText().isEmpty();
 
-}
-/**
- * 
- * @param observable
- * @param oldValue
- * @param newValue 
- */
-private void handleRepeatNewPassword(ObservableValue observable,
-                                      String oldValue,
-                                      String newValue){
+        applyExit.setDisable(!valid);
+    }
 
+     
+    // EVENTOS DE BOTONES
+     
 
-}
-/**
- * 
- * @param event 
- */
-private void handleApplyExitOnAction(ActionEvent event){
+    private void handleApplyExitOnAction(ActionEvent event) {
+        /*
+        try{
+            //Crear un objeto Customer
+            Customer customer = new Customer();
+            //Establecer propiedades del objeto a partir de los valores de los campos
+            customer.setLastName("");
+            CustomerRESTClient client=new CustomerRESTClient();
+            client.create_XML(customer);
+            cliente.close();
+            //Indicar al ususario que se ha registrado correctamente
+            new Alert("").;
+            //abrir ventana de Change Password
+            //Solo se me produce la 500 InternalServerErrorException
+        }catch(InternalServerErrorException e){
+        
+        }
+        */
+        try {
+            validarContraseñaActual(currentPassword.getText());
+            validarNuevaContraseña(newPassword.getText());
+            validarRepetición(newPassword.getText(), repeatNewPassword.getText());
 
+            Alert alert = new Alert(Alert.AlertType.INFORMATION, "Contraseña cambiada correctamente");
+            alert.showAndWait();
 
-}
-/**
- * 
- * @param event 
- */
-private void handleBackOnAction(ActionEvent event){
+            ((Stage) applyExit.getScene().getWindow()).close();
+        } catch (ValidationException e) {
+            Alert alert = new Alert(Alert.AlertType.ERROR, e.getMessage());
+            alert.showAndWait();
+        }
+    }
 
-
-}
+    private void handleBackOnAction(ActionEvent event) {
+        ((Stage) back.getScene().getWindow()).close();
+    }
 }
