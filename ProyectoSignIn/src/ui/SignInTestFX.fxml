@@ -32,7 +32,7 @@ fx:controller="proyectosignin1.ui.GestionUsuariosController">
          </font>
       </Label>
       <Button fx:id="btSignIn" layoutX="419.0" layoutY="374.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="160.0" text="Sign In" />
-      <Hyperlink fx:id="hlRegister" layoutX="426.0" layoutY="329.0" text="Register" />
+      <Hyperlink "hlRegister" layoutX="426.0" layoutY="329.0" text="Register" />
       <Button fx:id="btExit" layoutX="240.0" layoutY="374.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="160.0" text="Exit" />
       <Label layoutX="272.0" layoutY="333.0" text="Don't have an account?" />
       <Label fx:id="lbErrorEmail" disable="true" layoutX="525.0" layoutY="199.0" text="Enter a valid format" textFill="#fc0000" underline="true" />

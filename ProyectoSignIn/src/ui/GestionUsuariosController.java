@@ -1,5 +1,6 @@
 package ui;
 
+import java.io.IOException;
 import java.util.Optional;
 import java.util.logging.Logger;
 import javafx.beans.value.ObservableValue;
@@ -18,6 +19,8 @@ import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import java.util.regex.Pattern;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
 
 /**
  * Controller class for user management windows
@@ -97,7 +100,14 @@ public class GestionUsuariosController {
      */
     
     private void handleHlRegisterOnAction(ActionEvent event){
-        
+        try{
+        FXMLLoader loader = new  FXMLLoader(getClass().getResource("SignUP_View.fxml"));
+        Parent root = loader.load();
+        Scene scene = ((Node)event.getSource()).getScene();
+        scene.setRoot(root);
+        }catch(Exception e){
+            
+        }
     }
 
     private void handleTfUserTextChange(ObservableValue observable,String oldValue,String newValue){
