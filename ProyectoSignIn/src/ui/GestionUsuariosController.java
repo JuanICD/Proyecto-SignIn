@@ -189,6 +189,7 @@ public class GestionUsuariosController {
     client.close();
     //new Alert ();
     }catch(Exception e){
+        
     }
     }
 }
