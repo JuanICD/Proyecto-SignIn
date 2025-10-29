@@ -24,7 +24,7 @@ import java.util.regex.Pattern;
 
 /**
  * Controller class for user management windows
- * @author alex
+ * @author Alex
  */
 public class GestionUsuariosController {
     @FXML
@@ -93,6 +93,10 @@ public class GestionUsuariosController {
             alert.showAndWait();
         }
     }
+    /**
+     * 
+     * @param event 
+     */
 
     private void handleBtExitOnAction(ActionEvent event){
         Alert confirm = new Alert(AlertType.CONFIRMATION, "Are you sure you want to exit?");
@@ -101,7 +105,11 @@ public class GestionUsuariosController {
             stage.close();
         }
     }
-
+    /**
+     * 
+     * @param event 
+     */
+    
     private void handleHlRegisterOnAction(ActionEvent event){
         try {
             LOGGER.info("Opening Register window...");
@@ -116,6 +124,12 @@ public class GestionUsuariosController {
             LOGGER.log(Level.SEVERE, "Error loading Register window", ex);
         }
     }
+    /**
+     * 
+     * @param observable
+     * @param oldValue
+     * @param newValue 
+     */
 
     private void handleTfUserTextChange(ObservableValue observable,String oldValue,String newValue){
         validateFields();
@@ -126,10 +140,23 @@ public class GestionUsuariosController {
             lbErrorEmail.setText("");
         }
     }
+    /**
+     * 
+     * @param observable
+     * @param oldValue
+     * @param newValue 
+     */
+    
 
     private void handlePfPasswdTextChange(ObservableValue observable,String oldValue,String newValue){
         validateFields();
     }
+    /**
+     * 
+     * @param observable
+     * @param oldValue
+     * @param newValue 
+     */
 
     private void handleTfUserFocusChange(ObservableValue observable,Boolean oldValue,Boolean newValue){
         if(oldValue){
@@ -141,7 +168,11 @@ public class GestionUsuariosController {
             }
         }
     }
-
+    /**
+     * 
+     * @param event 
+     */
+    
     private void handleWindowCloseRequest(WindowEvent event){
         Alert confirm = new Alert(AlertType.CONFIRMATION, "Are you sure you want to exit?");
         Optional<ButtonType> result = confirm.showAndWait();
@@ -149,7 +180,11 @@ public class GestionUsuariosController {
             event.consume();
         }
     }
-
+    /**
+     * 
+     * @param email
+     * @return 
+     */
     private boolean isValidEmail(String email){
         String regex = "^[A-Za-z0-9+_.-]+@(.+)$";
         return Pattern.matches(regex, email);
