@@ -21,7 +21,7 @@ import javafx.stage.WindowEvent;
 import java.util.regex.Pattern;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
-import logic.CustomerRESTClient;
+import model.CustomerRESTClient;
 import logic.Customer;
 
 /**
