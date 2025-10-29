@@ -21,6 +21,8 @@ import javafx.stage.WindowEvent;
 import java.util.regex.Pattern;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
+import logic.CustomerRESTClient;
+import logic.Customer;
 
 /**
  * Controller class for user management windows
@@ -106,7 +108,8 @@ public class GestionUsuariosController {
         Scene scene = ((Node)event.getSource()).getScene();
         scene.setRoot(root);
         }catch(Exception e){
-            
+           Alert alert = new Alert(AlertType.ERROR, e.getMessage());
+            alert.showAndWait(); 
         }
     }
 
@@ -173,6 +176,20 @@ public class GestionUsuariosController {
     private void validateFields(){
         boolean disable = tfUser.getText().isEmpty() || pfPasswd.getText().isEmpty();
         btSignIn.setDisable(disable);
+    }
+    private void handleBtCrearOnAction(ActionEvent event){
+    try{
+    //Crear un objeto customer
+    Customer customer = new Customer();
+    //Establecer propiedades del objeto a partis de los valores del campo
+    customer.setLastName("");
+    new CustomerRESTClient().create_XML(customer);
+    CustomerRESTClient client = new CustomerRESTClient();
+    client.create_XML(customer);
+    client.close();
+    //new Alert ();
+    }catch(Exception e){
+    }
     }
 }
 
