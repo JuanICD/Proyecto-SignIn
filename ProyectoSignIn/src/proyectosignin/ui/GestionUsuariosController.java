@@ -190,11 +190,11 @@ public class GestionUsuariosController {
      */
     private void handleOnClickLink(ActionEvent event) {
         try {
-            /*Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
             alert.setContentText("Are you sure you want to exit, all changes will delete");
             alert.showAndWait();
             LOGGER.info("volviendo a la pagina de Sign In");
-            */
+            
             
             FXMLLoader loader = new FXMLLoader(getClass().getResource("SignInFX.fxml"));
             Parent root = loader.load();
