@@ -71,11 +71,13 @@ public class GestionUsuariosController {
         stage.show();
         //Se enfoca en el campo Email
         tfUser.requestFocus();
+        lbErrorSignIn.setText("");
     }
     private void handleBtSignInOnAction(ActionEvent event){
         try {
             String email = tfUser.getText();
             String passwd = pfPasswd.getText();
+            CustomerRESTClient client = new CustomerRESTClient();
             if(email.isEmpty() || passwd.isEmpty()){
                 throw new Exception("Email and password are required");
             }
@@ -121,6 +123,9 @@ public class GestionUsuariosController {
         }else{
             lbErrorEmail.setText("");
         }
+    }
+    private void handletfErrorSignIn(ObservableValue observable,String oldValue,String newValue){
+    
     }
     /**
      * 
@@ -177,20 +182,5 @@ public class GestionUsuariosController {
         boolean disable = tfUser.getText().isEmpty() || pfPasswd.getText().isEmpty();
         btSignIn.setDisable(disable);
     }
-    private void handleBtCrearOnAction(ActionEvent event){
-    try{
-    //Crear un objeto customer
-    Customer customer = new Customer();
-    //Establecer propiedades del objeto a partis de los valores del campo
-    customer.setLastName("");
-    new CustomerRESTClient().create_XML(customer);
-    CustomerRESTClient client = new CustomerRESTClient();
-    client.create_XML(customer);
-    client.close();
-    //new Alert ();
-    }catch(Exception e){
-        
-    }
-    }
-}
 
+}
