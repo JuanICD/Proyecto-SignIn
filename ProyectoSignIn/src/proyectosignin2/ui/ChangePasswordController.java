@@ -66,7 +66,7 @@ public class ChangePasswordController {
         stage.setTitle("Change Password");
         stage.setResizable(false);
 
-        applyExit.setDisable(true);
+        //applyExit.setDisable(true);
 
         // Asociar eventos a botones
         applyExit.setOnAction(this::handleApplyExitOnAction);
@@ -130,14 +130,17 @@ public class ChangePasswordController {
         if (password.isEmpty()) {
             throw new ValidationException("La nueva contraseña no puede estar vacía.");
         }
-        if (password.length() < 8) {
-            throw new ValidationException("Debe tener al menos 8 caracteres.");
+        if (password.length() < 10) {
+            throw new ValidationException("Debe tener al menos 10 caracteres.");
         }
         if (!password.matches(".*[A-Z].*")) {
             throw new ValidationException("Debe contener al menos una mayúscula.");
         }
         if (!password.matches(".*\\d.*")) {
             throw new ValidationException("Debe contener al menos un número.");
+        }
+        if (!password.matches(".*[!@#$%^&*()_+\\-={}\\[\\]:;\"'|<>,.?/~`].*")) {
+        throw new ValidationException("Debe contener al menos un símbolo (por ejemplo: @, #, $, %, &).");
         }
         if (password.equals(USER_CURRENT_PASSWORD)) {
             throw new ValidationException("La nueva contraseña no puede ser igual a la actual.");
@@ -166,7 +169,7 @@ public class ChangePasswordController {
                 !newPassword.getText().isEmpty() &&
                 !repeatNewPassword.getText().isEmpty();
 
-        applyExit.setDisable(!valid);
+        //applyExit.setDisable(!valid);
     }
 
      
@@ -208,5 +211,13 @@ public class ChangePasswordController {
 
     private void handleBackOnAction(ActionEvent event) {
         ((Stage) back.getScene().getWindow()).close();
+    }
+    // ===============================================================
+    // CLASE INTERNA DE EXCEPCIÓN PERSONALIZADA
+    // ===============================================================
+    private static class ValidationException extends Exception {
+        public ValidationException(String message) {
+            super(message);
+        }
     }
 }
