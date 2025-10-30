@@ -31,6 +31,9 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.stage.Stage;
+import javax.ws.rs.InternalServerErrorException;
+import proyectosignin2.logic.CustomerRESTClient;
+import proyectosignin2.model.Customer;
 
 /**
  * Controlador para el cambio de contraseña.
@@ -57,7 +60,7 @@ public class ChangePasswordController {
 
     private static final Logger LOGGER = Logger.getLogger("ui/proyectosignin2.ui");
 
-    private static final String USER_CURRENT_PASSWORD = "12345";
+    private static final String USER_CURRENT_PASSWORD = "12345678A$";
 
     public void init(Stage stage, Parent root) {
         LOGGER.info("Initializing Change Password window");
@@ -119,40 +122,40 @@ public class ChangePasswordController {
 
     private void validarContraseñaActual(String password) throws ValidationException {
         if (password.isEmpty()) {
-            throw new ValidationException("La contraseña actual no puede estar vacía.");
+            throw new ValidationException("The current password cannot be empty.");
         }
         if (!password.equals(USER_CURRENT_PASSWORD)) {
-            throw new ValidationException("La contraseña actual es incorrecta.");
+            throw new ValidationException("The current password is incorrect.");
         }
     }
 
     private void validarNuevaContraseña(String password) throws ValidationException {
         if (password.isEmpty()) {
-            throw new ValidationException("La nueva contraseña no puede estar vacía.");
+            throw new ValidationException("The new password cannot be empty.");
         }
         if (password.length() < 10) {
-            throw new ValidationException("Debe tener al menos 10 caracteres.");
+            throw new ValidationException("It must have at least 10 characters.");
         }
         if (!password.matches(".*[A-Z].*")) {
-            throw new ValidationException("Debe contener al menos una mayúscula.");
+            throw new ValidationException("It must contain at least one uppercase letter.");
         }
         if (!password.matches(".*\\d.*")) {
-            throw new ValidationException("Debe contener al menos un número.");
+            throw new ValidationException("It must contain at least one number.");
         }
         if (!password.matches(".*[!@#$%^&*()_+\\-={}\\[\\]:;\"'|<>,.?/~`].*")) {
-        throw new ValidationException("Debe contener al menos un símbolo (por ejemplo: @, #, $, %, &).");
+        throw new ValidationException("It must contain at least one symbol (for example: @, #, $, %, &).");
         }
         if (password.equals(USER_CURRENT_PASSWORD)) {
-            throw new ValidationException("La nueva contraseña no puede ser igual a la actual.");
+            throw new ValidationException("The new password cannot be the same as the current one.");
         }
     }
 
     private void validarRepetición(String nueva, String repetida) throws ValidationException {
         if (repetida.isEmpty()) {
-            throw new ValidationException("Debe repetir la nueva contraseña.");
+            throw new ValidationException("You must repeat the new password.");
         }
         if (!repetida.equals(nueva)) {
-            throw new ValidationException("Las contraseñas no coinciden.");
+            throw new ValidationException("The passwords do not match.");
         }
     }
 
@@ -177,29 +180,29 @@ public class ChangePasswordController {
      
 
     private void handleApplyExitOnAction(ActionEvent event) {
-        /*
+        
         try{
             //Crear un objeto Customer
             Customer customer = new Customer();
             //Establecer propiedades del objeto a partir de los valores de los campos
-            customer.setLastName("");
+            customer.setPassword("");
             CustomerRESTClient client=new CustomerRESTClient();
-            client.create_XML(customer);
-            cliente.close();
-            //Indicar al ususario que se ha registrado correctamente
-            new Alert("").;
+            client.edit_XML(customer);
+            client.close();
+            //Indicar al ususario que ha cambiado la contraseña correctamente
+            Alert alert = new Alert(Alert.AlertType.INFORMATION, "Password changed successfully.");
             //abrir ventana de Change Password
             //Solo se me produce la 500 InternalServerErrorException
         }catch(InternalServerErrorException e){
         
         }
-        */
+        
         try {
             validarContraseñaActual(currentPassword.getText());
             validarNuevaContraseña(newPassword.getText());
             validarRepetición(newPassword.getText(), repeatNewPassword.getText());
 
-            Alert alert = new Alert(Alert.AlertType.INFORMATION, "Contraseña cambiada correctamente");
+            Alert alert = new Alert(Alert.AlertType.INFORMATION, "Password changed successfully.");
             alert.showAndWait();
 
             ((Stage) applyExit.getScene().getWindow()).close();
@@ -212,9 +215,9 @@ public class ChangePasswordController {
     private void handleBackOnAction(ActionEvent event) {
         ((Stage) back.getScene().getWindow()).close();
     }
-    // ===============================================================
+    // 
     // CLASE INTERNA DE EXCEPCIÓN PERSONALIZADA
-    // ===============================================================
+    // 
     private static class ValidationException extends Exception {
         public ValidationException(String message) {
             super(message);
