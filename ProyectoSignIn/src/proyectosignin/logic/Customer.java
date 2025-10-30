@@ -68,7 +68,33 @@ public class Customer implements Serializable {
 
     /**
      * Relational field for customer's accounts.
+     * @param firstName
+     * @param lastName
+     * @param middleInitial
+     * @param street
+     * @param city
+     * @param state
+     * @param phone
+     * @param zip
+     * @param email
+     * @param password
+     * 
+     * Constructor para pasarle parametro para añadir al customer
+     * Parsea el zip y el phone para poder pasarle por parametro solo el texto de las TextField
      */
+    public Customer(String firstName, String lastName, String middleInitial, String street, String city, String state, String zip, String phone, String email, String password) {
+        this.firstName = firstName.trim();
+        this.lastName = lastName.trim();
+        this.middleInitial = middleInitial.trim();
+        this.street = street.trim();
+        this.city = city.trim();
+        this.state = state.trim();
+        this.zip = Integer.parseInt(zip.trim());
+        this.phone = Long.parseLong(phone.trim());
+        this.email = email.trim();
+        this.password = password.trim();
+    }
+
     /**
      *
      * @return the id of the customer.

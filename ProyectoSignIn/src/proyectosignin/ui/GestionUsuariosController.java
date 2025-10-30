@@ -28,7 +28,10 @@ import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 
 import javafx.stage.Stage;
+import javax.ws.rs.ClientErrorException;
+import javax.ws.rs.ForbiddenException;
 import javax.ws.rs.InternalServerErrorException;
+import javax.ws.rs.NotAuthorizedException;
 import proyectosignin.logic.Customer;
 import proyectosignin.model.CustomerRESTCLient;
 
@@ -194,13 +197,11 @@ public class GestionUsuariosController {
             alert.setContentText("Are you sure you want to exit, all changes will delete");
             alert.showAndWait();
             LOGGER.info("volviendo a la pagina de Sign In");
-            
-            
+
             FXMLLoader loader = new FXMLLoader(getClass().getResource("SignInFX.fxml"));
             Parent root = loader.load();
-            Scene scene = ((Node)event.getSource()).getScene();
+            Scene scene = ((Node) event.getSource()).getScene();
             scene.setRoot(root);
-            
 
         } catch (IOException e) {
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
@@ -537,7 +538,6 @@ public class GestionUsuariosController {
 
         try {
             if (!newValue) {
-                LOGGER.info("Focus textfield email");
                 String emailText = tfEmail.getText().trim();
                 //Validar que el campo no este vacio 
                 if (emailText.isEmpty()) {
@@ -574,29 +574,50 @@ public class GestionUsuariosController {
      */
     private void handleOnSignUpAction(ActionEvent event) {
         try {
-            
+
             //Crear objeto customer
-            Customer customer = new Customer();
-            customer.setFirstName("");
+            Customer customer = new Customer(
+                    tfFirstName.getText(),
+                    tfLastName.getText(),
+                    tfMiddleName.getText(),
+                    tfStreet.getText(),
+                    tfCity.getText(),
+                    tfState.getText(),
+                    tfZip.getText(),
+                    tfPhone.getText(),
+                    tfEmail.getText(),
+                    pfConfirmPass.getText()
+            );
+
+            //Insertar customer en BD
             new CustomerRESTCLient().create_XML(customer);
             //Indicar al usuario que se ha registrado correctamente
             
-            
-            LOGGER.info("Button pressed");
-            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-            alert.setContentText("Are you sure you want to register?");
-            Optional<ButtonType> btnType = alert.showAndWait();
+            LOGGER.info("USER registered");
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setContentText("User register");
+            alert.showAndWait();
 
-            if (btnType.isPresent() && btnType.get() == ButtonType.OK) {
-                //Logica para registrar al usuario
-                LOGGER.info("USER registered");
-            }
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("SignInFX.fxml"));
+            Parent root = loader.load();
+            Scene scene = ((Node) event.getSource()).getScene();
+            scene.setRoot(root);
 
         } catch (InternalServerErrorException e) {
-            /*Alert alert = new Alert(Alert.AlertType.INFORMATION);
-            alert.setContentText(e.getMessage());
+            LOGGER.info("Error server");
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setContentText("Server error, try later");
             alert.showAndWait();
-            */
+        } catch (ForbiddenException forbiddenException) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setContentText("Email already exist");
+            alert.showAndWait();
+        } catch (Exception e) {
+            LOGGER.info(e.getMessage());
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setContentText("Unknown error");
+            alert.showAndWait();
+
         }
     }
 
@@ -618,11 +639,16 @@ public class GestionUsuariosController {
             Optional<ButtonType> btnType = alert.showAndWait();
 
             if (btnType.isPresent() && btnType.get() == ButtonType.CANCEL) {
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("SignInFX.fxml"));
+                Parent root = loader.load();
+                Scene scene = ((Node) event.getSource()).getScene();
+                scene.setRoot(root);
                 LOGGER.info("Cerrando programa");
                 //Platform.exit(); --> Posible solucion para cerrar la ventana pero cierra toda la app
             }
 
         } catch (Exception e) {
+            e.getMessage();
 
         }
     }
