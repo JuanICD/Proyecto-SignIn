@@ -193,15 +193,16 @@ public class GestionUsuariosController {
      */
     private void handleOnClickLink(ActionEvent event) {
         try {
-            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-            alert.setContentText("Are you sure you want to exit, all changes will delete");
-            alert.showAndWait();
-            LOGGER.info("volviendo a la pagina de Sign In");
+            Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "Are you sure you want to exit, all changes will delete");
+            Optional<ButtonType> btnType = alert.showAndWait();
+            if (btnType.isPresent() && btnType.get() == ButtonType.OK) {
 
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("SignInFX.fxml"));
-            Parent root = loader.load();
-            Scene scene = ((Node) event.getSource()).getScene();
-            scene.setRoot(root);
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("SignInFX.fxml"));
+                Parent root = loader.load();
+                Scene scene = ((Node) event.getSource()).getScene();
+                scene.setRoot(root);
+                LOGGER.info("volviendo a la pagina de Sign In");
+            }
 
         } catch (IOException e) {
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
@@ -591,7 +592,7 @@ public class GestionUsuariosController {
             );
 
             //Insertar customer en BD
-            client =new CustomerRESTCLient();
+            client = new CustomerRESTCLient();
             client.create_XML(customer);
             //Indicar al usuario que se ha registrado correctamente
 
@@ -606,7 +607,7 @@ public class GestionUsuariosController {
             scene.setRoot(root);
 
         } catch (InternalServerErrorException e) {
-            LOGGER.info("Error server"+ e.getMessage());
+            LOGGER.info("Error server" + e.getMessage());
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setContentText("Server error, try later");
             alert.showAndWait();
@@ -635,24 +636,21 @@ public class GestionUsuariosController {
 
         try {
 
-            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-            alert.setTitle("Exit dialogue");
-            alert.setHeaderText("Confirm exit");
-            alert.setContentText("Are you sure you want to exit?");
+            Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "Are you sure you want to exit?");
 
             Optional<ButtonType> btnType = alert.showAndWait();
 
-            if (btnType.isPresent() && btnType.get() == ButtonType.CANCEL) {
+            if (btnType.isPresent() && btnType.get() == ButtonType.OK) {
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("SignInFX.fxml"));
                 Parent root = loader.load();
                 Scene scene = ((Node) event.getSource()).getScene();
                 scene.setRoot(root);
-                LOGGER.info("Cerrando programa");
-                //Platform.exit(); --> Posible solucion para cerrar la ventana pero cierra toda la app
+                LOGGER.info("Volviendo a la pagina de inicio");
             }
 
         } catch (Exception e) {
-            e.getMessage();
+            LOGGER.warning("Se ha producido un error"+e.getMessage());
+            Alert alert = new Alert(Alert.AlertType.ERROR, e.getMessage() + "\nTry again");
 
         }
     }
