@@ -65,6 +65,8 @@ public class Customer implements Serializable {
      * Customer's password for basic authentication.
      */
     private String password;
+    
+    public Customer(){}
 
     /**
      * Relational field for customer's accounts.
@@ -83,6 +85,7 @@ public class Customer implements Serializable {
      * Parsea el zip y el phone para poder pasarle por parametro solo el texto de las TextField
      */
     public Customer(String firstName, String lastName, String middleInitial, String street, String city, String state, String zip, String phone, String email, String password) {
+        
         this.firstName = firstName.trim();
         this.lastName = lastName.trim();
         this.middleInitial = middleInitial.trim();

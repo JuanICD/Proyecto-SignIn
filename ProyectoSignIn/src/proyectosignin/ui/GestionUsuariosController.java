@@ -573,6 +573,7 @@ public class GestionUsuariosController {
      * @param event
      */
     private void handleOnSignUpAction(ActionEvent event) {
+        CustomerRESTCLient client = null;
         try {
 
             //Crear objeto customer
@@ -590,9 +591,10 @@ public class GestionUsuariosController {
             );
 
             //Insertar customer en BD
-            new CustomerRESTCLient().create_XML(customer);
+            client =new CustomerRESTCLient();
+            client.create_XML(customer);
             //Indicar al usuario que se ha registrado correctamente
-            
+
             LOGGER.info("USER registered");
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
             alert.setContentText("User register");
@@ -604,7 +606,7 @@ public class GestionUsuariosController {
             scene.setRoot(root);
 
         } catch (InternalServerErrorException e) {
-            LOGGER.info("Error server");
+            LOGGER.info("Error server"+ e.getMessage());
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setContentText("Server error, try later");
             alert.showAndWait();
@@ -618,6 +620,8 @@ public class GestionUsuariosController {
             alert.setContentText("Unknown error");
             alert.showAndWait();
 
+        } finally {
+            client.close();
         }
     }
 
