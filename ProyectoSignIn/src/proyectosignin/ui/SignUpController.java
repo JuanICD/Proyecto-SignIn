@@ -42,7 +42,7 @@ import proyectosignin.model.CustomerRESTCLient;
  *
  * @author juan
  */
-public class GestionUsuariosController {
+public class SignUpController {
 
     /**
      * FXML fields
