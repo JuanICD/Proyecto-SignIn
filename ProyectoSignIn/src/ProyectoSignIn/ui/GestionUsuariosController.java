@@ -1,4 +1,4 @@
-package ui;
+package ProyectoSignIn.ui;
 
 import java.io.IOException;
 import java.util.Optional;
@@ -78,7 +78,7 @@ public class GestionUsuariosController {
         String email = tfUser.getText().trim();
         String passwd = pfPasswd.getText().trim();
         CustomerRESTClient client = new CustomerRESTClient();
-        Customer customer = client.findCustomerByEmailPassword_JSON(Customer.class, email, passwd);
+        Customer customer = client.findCustomerByEmailPassword_XML(Customer.class, email, passwd);
         client.close();
         if(customer == null){
             lbErrorSignIn.setText("Incorrect email or password");
@@ -86,8 +86,10 @@ public class GestionUsuariosController {
         LOGGER.info("User authenticated: " + customer.getEmail());
         FXMLLoader loader = new FXMLLoader(getClass().getResource("CambiarContraseña.fxml"));
         Parent root = loader.load();
-        Scene scene = ((Node) event.getSource()).getScene();
-        scene.setRoot(root);
+        GestionUsuariosController controller =loader.getController();
+        
+        //controller.setCustomer(customer);
+        controller.initStage(stage, root);
 
     } catch (javax.ws.rs.ClientErrorException e) {
         Alert alert = new Alert(AlertType.ERROR, "Invalid credentials or server unavailable.");

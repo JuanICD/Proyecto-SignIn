@@ -1,3 +1,5 @@
+package ProyectoSignIn;
+
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
@@ -10,7 +12,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-import ui.GestionUsuariosController;
+import ProyectoSignIn.ui.GestionUsuariosController;
 
 /**
  *
