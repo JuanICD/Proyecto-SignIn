@@ -73,19 +73,39 @@ public class GestionUsuariosController {
         tfUser.requestFocus();
         lbErrorSignIn.setText("");
     }
-    private void handleBtSignInOnAction(ActionEvent event){
-        try {
-            String email = tfUser.getText();
-            String passwd = pfPasswd.getText();
-            CustomerRESTClient client = new CustomerRESTClient();
-            if(email.isEmpty() || passwd.isEmpty()){
-                throw new Exception("Email and password are required");
-            }
-        } catch (Exception e){
-            Alert alert = new Alert(AlertType.ERROR, e.getMessage());
-            alert.showAndWait();
+   private void handleBtSignInOnAction(ActionEvent event){
+    try {
+        String email = tfUser.getText().trim();
+        String passwd = pfPasswd.getText().trim();
+        if(email.isEmpty() || passwd.isEmpty()){
+            throw new Exception("Email and password are required");
         }
+        if(!isValidEmail(email)){
+            throw new Exception("Invalid email format");
+        }
+        CustomerRESTClient client = new CustomerRESTClient();
+        Customer customer = client.findCustomerByEmailPassword_JSON(Customer.class, email, passwd);
+        client.close();
+        if(customer == null){
+            lbErrorSignIn.setText("Incorrect email or password");
+        }
+        LOGGER.info("User authenticated: " + customer.getEmail());
+        FXMLLoader loader = new FXMLLoader(getClass().getResource(""));
+        Parent root = loader.load();
+        Scene scene = ((Node) event.getSource()).getScene();
+        scene.setRoot(root);
+
+    } catch (javax.ws.rs.ClientErrorException e) {
+        Alert alert = new Alert(AlertType.ERROR, "Invalid credentials or server unavailable.");
+        alert.showAndWait();
+    } catch (IOException e) {
+        Alert alert = new Alert(AlertType.ERROR, "Error loading next window: " + e.getMessage());
+        alert.showAndWait();
+    } catch (Exception e) {
+        Alert alert = new Alert(AlertType.ERROR, e.getMessage());
+        alert.showAndWait();
     }
+}
     /**
      * 
      * @param event 
