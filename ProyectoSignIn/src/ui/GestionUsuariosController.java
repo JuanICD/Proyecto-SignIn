@@ -77,12 +77,6 @@ public class GestionUsuariosController {
     try {
         String email = tfUser.getText().trim();
         String passwd = pfPasswd.getText().trim();
-        if(email.isEmpty() || passwd.isEmpty()){
-            throw new Exception("Email and password are required");
-        }
-        if(!isValidEmail(email)){
-            throw new Exception("Invalid email format");
-        }
         CustomerRESTClient client = new CustomerRESTClient();
         Customer customer = client.findCustomerByEmailPassword_JSON(Customer.class, email, passwd);
         client.close();
@@ -90,7 +84,7 @@ public class GestionUsuariosController {
             lbErrorSignIn.setText("Incorrect email or password");
         }
         LOGGER.info("User authenticated: " + customer.getEmail());
-        FXMLLoader loader = new FXMLLoader(getClass().getResource(""));
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("CambiarContraseña.fxml"));
         Parent root = loader.load();
         Scene scene = ((Node) event.getSource()).getScene();
         scene.setRoot(root);
