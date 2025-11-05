@@ -625,7 +625,7 @@ public class GestionUsuariosController {
             client.close();
         }
     }
-
+    
     /**
      * Método de utilidad para mostrar un mensaje de error de validación. Pone
      * el texto de la etiqueta y el borde del campo en color rojo.
