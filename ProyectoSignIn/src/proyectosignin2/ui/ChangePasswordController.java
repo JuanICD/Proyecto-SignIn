@@ -35,6 +35,8 @@ import javax.ws.rs.InternalServerErrorException;
 import proyectosignin2.logic.CustomerRESTClient;
 import proyectosignin2.model.Customer;
 
+
+
 /**
  * Controlador para el cambio de contraseña.
  * @author puchol
@@ -59,9 +61,12 @@ public class ChangePasswordController {
     private Label error3;
 
     private static final Logger LOGGER = Logger.getLogger("ui/proyectosignin2.ui");
-
-    private static final String USER_CURRENT_PASSWORD = "12345678A$";
-
+    private Customer customer;
+    
+     public void setCustomer(Customer customer){
+        this.customer = customer;
+    }
+   
     public void init(Stage stage, Parent root) {
         LOGGER.info("Initializing Change Password window");
         Scene scene = new Scene(root);
@@ -124,7 +129,7 @@ public class ChangePasswordController {
         if (password.isEmpty()) {
             throw new ValidationException("The current password cannot be empty.");
         }
-        if (!password.equals(USER_CURRENT_PASSWORD)) {
+        if (!password.equals(customer.getPassword())) {
             throw new ValidationException("The current password is incorrect.");
         }
     }
@@ -145,7 +150,7 @@ public class ChangePasswordController {
         if (!password.matches(".*[!@#$%^&*()_+\\-={}\\[\\]:;\"'|<>,.?/~`].*")) {
         throw new ValidationException("It must contain at least one symbol (for example: @, #, $, %, &).");
         }
-        if (password.equals(USER_CURRENT_PASSWORD)) {
+        if (password.equals(customer.getPassword())) {
             throw new ValidationException("The new password cannot be the same as the current one.");
         }
     }
@@ -194,7 +199,8 @@ public class ChangePasswordController {
             //abrir ventana de Change Password
             //Solo se me produce la 500 InternalServerErrorException
         }catch(InternalServerErrorException e){
-        
+        Alert alert = new Alert(Alert.AlertType.ERROR, e.getMessage());
+            alert.showAndWait();
         }
         
         try {
@@ -211,7 +217,7 @@ public class ChangePasswordController {
             alert.showAndWait();
         }
     }
-
+    
     private void handleBackOnAction(ActionEvent event) {
         ((Stage) back.getScene().getWindow()).close();
     }
