@@ -24,7 +24,6 @@ public class SignInSignUpApplication extends Application {
         Parent root = (Parent) loader.load();
         SignUpController controller = loader.getController();
         controller.initStage(stage,root);
-        
              
     }
 

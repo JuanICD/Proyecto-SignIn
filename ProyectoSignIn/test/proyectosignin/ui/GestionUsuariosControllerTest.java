@@ -35,11 +35,10 @@ public class GestionUsuariosControllerTest extends ApplicationTest {
         verifyThat("#tfEmail", isFocused());
     }
 
-    /*
     @Test
     public void test2_UserRegister() {
         clickOn("#tfEmail");
-        write("juan@caiza.com");
+        write("puma@marranote.com");
         verifyThat("#btnSignUp", isDisabled());
 
         clickOn("#tfFirstName");
@@ -85,6 +84,7 @@ public class GestionUsuariosControllerTest extends ApplicationTest {
         clickOn("#btnSignUp");
 
         verifyThat("User register", isVisible());
+        clickOn("Aceptar");
 
     }
 
@@ -137,10 +137,10 @@ public class GestionUsuariosControllerTest extends ApplicationTest {
         clickOn("#btnSignUp");
 
         verifyThat("Email already exist", isVisible());
-        clickOn("OK");
+        clickOn("Aceptar");
 
     }
-     */
+
     @Test
     public void test4_LabelsCheck() {
         clickOn("#tfEmail");
@@ -188,7 +188,7 @@ public class GestionUsuariosControllerTest extends ApplicationTest {
     }
 
     @Test
-    public void test6_BackButton(){
+    public void test6_BackButton() {
         clickOn("#btnBack");
         verifyThat("Are you sure you want to exit?", isVisible());
         clickOn("Aceptar");
