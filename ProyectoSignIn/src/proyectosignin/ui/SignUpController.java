@@ -32,8 +32,8 @@ import javax.ws.rs.ClientErrorException;
 import javax.ws.rs.ForbiddenException;
 import javax.ws.rs.InternalServerErrorException;
 import javax.ws.rs.NotAuthorizedException;
-import proyectosignin.logic.Customer;
-import proyectosignin.model.CustomerRESTCLient;
+import proyectosignin.model.Customer;
+import proyectosignin.logic.CustomerRESTCLient;
 
 /**
  * Controlador para la vista de registro de usuarios (Sign Up). Maneja la lógica
