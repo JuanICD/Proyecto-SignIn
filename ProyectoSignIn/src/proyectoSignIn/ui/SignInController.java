@@ -49,7 +49,7 @@ public class SignInController {
     private Label lbErrorEmail;
     @FXML
     private Label lbErrorSignIn;
-    private static final Logger LOGGER = Logger.getLogger("proyectosignin1.ui");
+    private static final Logger LOGGER = Logger.getLogger("proyectoSignIn.ui");
 
     private Stage stage;
 
