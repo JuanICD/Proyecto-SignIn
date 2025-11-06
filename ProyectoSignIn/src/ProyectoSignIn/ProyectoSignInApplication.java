@@ -12,7 +12,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-import ProyectoSignIn.ui.GestionUsuariosController;
+import ProyectoSignIn.ui.SignInController;
 
 /**
  *
@@ -25,7 +25,7 @@ public class ProyectoSignInApplication extends Application {
         FXMLLoader loader =new FXMLLoader(getClass().getResource("ui/SignInFX.fxml"));
         Parent root = (Parent)loader.load();
         
-        GestionUsuariosController controller = loader.getController();
+        SignInController controller = loader.getController();
         
         controller.initStage(stage,root);
     }
