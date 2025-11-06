@@ -16,7 +16,7 @@ import static org.testfx.matcher.base.NodeMatchers.isDisabled;
 import static org.testfx.matcher.base.NodeMatchers.isEnabled;
 import static org.testfx.matcher.base.NodeMatchers.isFocused;
 import static org.testfx.matcher.base.NodeMatchers.isVisible;
-import proyectosignin.SignInSignUpApplication;
+import proyectoSignIn.SignInSignUpApplication;
 
 /**
  *

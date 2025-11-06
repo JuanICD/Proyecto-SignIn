@@ -3,13 +3,13 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package proyectosignin;
+package proyectoSignIn;
 
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.stage.Stage;
-import proyectosignin.ui.SignUpController;
+import proyectoSignIn.ui.SignUpController;
 
 
 /**
