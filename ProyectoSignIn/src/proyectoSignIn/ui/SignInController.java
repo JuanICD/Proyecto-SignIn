@@ -1,4 +1,4 @@
-package ProyectoSignIn.ui;
+package proyectoSignIn.ui;
 
 import java.io.IOException;
 import java.util.Optional;
@@ -24,8 +24,8 @@ import javafx.scene.Node;
 import javax.ws.rs.ClientErrorException;
 import javax.ws.rs.InternalServerErrorException;
 import javax.ws.rs.NotAuthorizedException;
-import ProyectoSignIn.model.CustomerRESTClient;
-import logic.Customer;
+import proyectoSignIn.logic.CustomerRESTClient;
+import proyectoSignIn.model.Customer;
 
 /**
  * Controller class for user management windows
