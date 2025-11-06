@@ -7,7 +7,7 @@
 <?import java.lang.*?>
 <?import javafx.scene.layout.*?>
 
-<Pane fx:id="mainPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="768.0" prefWidth="1024.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="proyectoSignIn.ui.SignInController">
+<Pane fx:id="mainPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="768.0" prefWidth="1024.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="proyectoSignIn.ui.SignUpController">
     <children>
         <Label alignment="CENTER_RIGHT" contentDisplay="CENTER" layoutX="261.0" layoutY="144.0" prefHeight="37.0" prefWidth="69.0" text="Email ">
             <opaqueInsets>
@@ -55,21 +55,11 @@
                 <Insets />
             </opaqueInsets>
         </Label>
-        <TextField fx:id="tfCity" layoutX="336.0" layoutY="423.0" prefHeight="25.0" prefWidth="177.0" promptText="City">
-            <opaqueInsets>
-                <Insets />
-            </opaqueInsets>
-        </TextField>
         <Label alignment="CENTER_RIGHT" layoutX="527.0" layoutY="417.0" prefHeight="37.0" prefWidth="43.0" text="State">
             <opaqueInsets>
                 <Insets />
             </opaqueInsets>
         </Label>
-        <TextField fx:id="tfState" layoutX="580.0" layoutY="423.0" prefHeight="25.0" prefWidth="177.0" promptText="State">
-            <opaqueInsets>
-                <Insets />
-            </opaqueInsets>
-        </TextField>
         <Label alignment="CENTER_RIGHT" layoutX="264.0" layoutY="366.0" prefHeight="37.0" prefWidth="55.0" text="Street">
             <opaqueInsets>
                 <Insets />
@@ -80,12 +70,22 @@
                 <Insets />
             </opaqueInsets>
         </TextField>
-        <TextField fx:id="tfZip" layoutX="581.0" layoutY="476.0" prefHeight="25.0" prefWidth="177.0" promptText="66666">
+        <TextField fx:id="tfCity" layoutX="336.0" layoutY="423.0" prefHeight="25.0" prefWidth="177.0" promptText="City">
+            <opaqueInsets>
+                <Insets />
+            </opaqueInsets>
+        </TextField>
+        <TextField fx:id="tfState" layoutX="580.0" layoutY="423.0" prefHeight="25.0" prefWidth="177.0" promptText="State">
             <opaqueInsets>
                 <Insets />
             </opaqueInsets>
         </TextField>
         <TextField fx:id="tfPhone" layoutX="336.0" layoutY="476.0" prefHeight="25.0" prefWidth="177.0" promptText="666-666-666">
+            <opaqueInsets>
+                <Insets />
+            </opaqueInsets>
+        </TextField>
+        <TextField fx:id="tfZip" layoutX="581.0" layoutY="476.0" prefHeight="25.0" prefWidth="177.0" promptText="66666">
             <opaqueInsets>
                 <Insets />
             </opaqueInsets>
