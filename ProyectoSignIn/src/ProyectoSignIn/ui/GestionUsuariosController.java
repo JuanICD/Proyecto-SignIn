@@ -21,7 +21,10 @@ import javafx.stage.WindowEvent;
 import java.util.regex.Pattern;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
-import model.CustomerRESTClient;
+import javax.ws.rs.ClientErrorException;
+import javax.ws.rs.InternalServerErrorException;
+import javax.ws.rs.NotAuthorizedException;
+import ProyectoSignIn.model.CustomerRESTClient;
 import logic.Customer;
 
 /**
@@ -64,7 +67,7 @@ public class GestionUsuariosController {
         hlRegister.setOnAction(this::handleHlRegisterOnAction);
         tfUser.textProperty().addListener(this::handleTfUserTextChange);
         pfPasswd.textProperty().addListener(this::handlePfPasswdTextChange);
-        tfUser.focusedProperty().addListener(this::handleTfUserFocusChange);
+        /*tfUser.focusedProperty().addListener(this::handleTfUserFocusChange);*/
         //Controlar cierre de ventana
         stage.setOnCloseRequest(this::handleWindowCloseRequest);
         //Mostrar la ventana.
@@ -91,11 +94,11 @@ public class GestionUsuariosController {
         //controller.setCustomer(customer);
         controller.initStage(stage, root);
 
-    } catch (javax.ws.rs.ClientErrorException e) {
+    } catch (NotAuthorizedException e) {
         Alert alert = new Alert(AlertType.ERROR, "Invalid credentials or server unavailable.");
         alert.showAndWait();
-    } catch (IOException e) {
-        Alert alert = new Alert(AlertType.ERROR, "Error loading next window: " + e.getMessage());
+    } catch (InternalServerErrorException e) {
+        Alert alert = new Alert(AlertType.ERROR, "Error server down como puchol, try later: " + e.getMessage());
         alert.showAndWait();
     } catch (Exception e) {
         Alert alert = new Alert(AlertType.ERROR, e.getMessage());
@@ -161,7 +164,7 @@ public class GestionUsuariosController {
      * @param newValue 
      */
 
-    private void handleTfUserFocusChange(ObservableValue observable,Boolean oldValue,Boolean newValue){
+    /*private void handleTfUserFocusChange(ObservableValue observable,Boolean oldValue,Boolean newValue){
         if(oldValue){
             String email = tfUser.getText();
             if(!email.isEmpty() && !isValidEmail(email)){
@@ -170,7 +173,7 @@ public class GestionUsuariosController {
                 lbErrorEmail.setText("");
             }
         }
-    }
+    }*/
     /**
      * 
      * @param event 
