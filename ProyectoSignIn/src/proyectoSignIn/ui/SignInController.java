@@ -27,7 +27,6 @@ import javax.ws.rs.NotAuthorizedException;
 import proyectoSignIn.logic.CustomerRESTClient;
 import proyectoSignIn.model.Customer;
 
-
 /**
  * Controller class for user management windows
  *
@@ -57,6 +56,8 @@ public class SignInController {
         LOGGER.info("Initializing windows");
         this.stage = stage;
         Scene scene = new Scene(root);
+        scene.getStylesheets().add(getClass().getResource("styleSheet.css").toExternalForm());
+        stage.setScene(scene);
         stage.setScene(scene);
         //Establecer el titulo de la ventana al valor "Sign In".
         stage.setTitle("Sign In");
@@ -102,7 +103,7 @@ public class SignInController {
         } catch (Exception e) {
             Alert alert = new Alert(AlertType.ERROR, e.getMessage());
             alert.showAndWait();
-        } 
+        }
     }
 
     /**
@@ -130,8 +131,9 @@ public class SignInController {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("SignUP_View.fxml"));
             Parent root = loader.load();
-            Scene scene = ((Node) event.getSource()).getScene();
-            scene.setRoot(root);
+            SignUpController controller = loader.getController();
+            controller.initStage(this.stage, root);
+
         } catch (Exception e) {
             Alert alert = new Alert(AlertType.ERROR, e.getMessage());
             alert.showAndWait();
@@ -140,7 +142,7 @@ public class SignInController {
 
     private void handleTfUserTextChange(ObservableValue observable, String oldValue, String newValue) {
         try {
-            
+
             String regex_email = "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$";
             String email = tfUser.getText().trim();
             // Validar formato de email
@@ -152,7 +154,7 @@ public class SignInController {
         } catch (Exception e) {
             Alert alert = new Alert(AlertType.ERROR, e.getMessage());
             alert.showAndWait();
-        } 
+        }
     }
 
     /**
@@ -165,7 +167,7 @@ public class SignInController {
         try {
             if (tfUser.getText().isEmpty() && pfPasswd.getText().isEmpty()) {
                 throw new Exception();
-            }else{
+            } else {
                 btSignIn.setDisable(false);
             }
         } catch (Exception e) {

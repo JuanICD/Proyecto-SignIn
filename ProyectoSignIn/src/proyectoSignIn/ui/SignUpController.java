@@ -103,6 +103,7 @@ public class SignUpController {
     private Label passwordMessage;
     @FXML
     private Label confirmPassMessage;
+    private Stage stage;
 
     private static final Logger LOGGER = Logger.getLogger("proyectosignin.ui");
 
@@ -122,6 +123,7 @@ public class SignUpController {
         try {
 
             LOGGER.info("Initializing window");
+            this.stage = stage;
             Scene scene = new Scene(root);
             //Asigno la hoja de estilos
             scene.getStylesheets().add(getClass().getResource("styleSheet.css").toExternalForm());
@@ -130,7 +132,7 @@ public class SignUpController {
             btnSignUp.setDisable(true);
 
             //Establecer el título de la ventana a “Sign up”
-            stage.setTitle("Sign In");
+            stage.setTitle("Sign Up");
 
             //La ventana no debe ser redimensionable
             stage.setResizable(false);
@@ -197,8 +199,8 @@ public class SignUpController {
 
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("SignInFX.fxml"));
                 Parent root = loader.load();
-                Scene scene = ((Node) event.getSource()).getScene();
-                scene.setRoot(root);
+                SignInController controller = loader.getController();
+                controller.initStage(this.stage, root);
                 LOGGER.info("volviendo a la pagina de Sign In");
             }
 
@@ -623,7 +625,7 @@ public class SignUpController {
             client.close();
         }
     }
-    
+
     /**
      * Método de utilidad para mostrar un mensaje de error de validación. Pone
      * el texto de la etiqueta y el borde del campo en color rojo.
@@ -647,7 +649,7 @@ public class SignUpController {
             }
 
         } catch (Exception e) {
-            LOGGER.warning("Se ha producido un error"+e.getMessage());
+            LOGGER.warning("Se ha producido un error" + e.getMessage());
             Alert alert = new Alert(Alert.AlertType.ERROR, e.getMessage() + "\nTry again");
 
         }
