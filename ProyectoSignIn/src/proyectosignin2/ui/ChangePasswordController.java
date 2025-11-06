@@ -185,24 +185,6 @@ public class ChangePasswordController {
      
 
     private void handleApplyExitOnAction(ActionEvent event) {
-        
-        try{
-            //Crear un objeto Customer
-            Customer customer = new Customer();
-            //Establecer propiedades del objeto a partir de los valores de los campos
-            customer.setPassword("");
-            CustomerRESTClient client=new CustomerRESTClient();
-            client.edit_XML(customer);
-            client.close();
-            //Indicar al ususario que ha cambiado la contraseña correctamente
-            Alert alert = new Alert(Alert.AlertType.INFORMATION, "Password changed successfully.");
-            //abrir ventana de Change Password
-            //Solo se me produce la 500 InternalServerErrorException
-        }catch(InternalServerErrorException e){
-        Alert alert = new Alert(Alert.AlertType.ERROR, e.getMessage());
-            alert.showAndWait();
-        }
-        
         try {
             validarContraseñaActual(currentPassword.getText());
             validarNuevaContraseña(newPassword.getText());
@@ -214,6 +196,22 @@ public class ChangePasswordController {
             ((Stage) applyExit.getScene().getWindow()).close();
         } catch (ValidationException e) {
             Alert alert = new Alert(Alert.AlertType.ERROR, e.getMessage());
+            alert.showAndWait();
+        }
+        try{
+            //Crear un objeto Customer
+            CustomerRESTClient client = new CustomerRESTClient();
+            this.customer = client.findCustomerByEmailPassword_XML(Customer.class, "jsmith@enterprise.net", "abcd*1234");
+            //Establecer propiedades del objeto a partir de los valores de los campos
+            //customer.setPassword("");
+            //client.edit_XML(customer);
+            client.close();
+            //Indicar al ususario que ha cambiado la contraseña correctamente
+            Alert alert = new Alert(Alert.AlertType.INFORMATION, "Password changed successfully.");
+            //abrir ventana de Change Password
+            //Solo se me produce la 500 InternalServerErrorException
+        }catch(InternalServerErrorException e){
+        Alert alert = new Alert(Alert.AlertType.ERROR, e.getMessage());
             alert.showAndWait();
         }
     }
