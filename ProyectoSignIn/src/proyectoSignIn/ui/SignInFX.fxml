@@ -5,7 +5,7 @@
 <?import java.lang.*?>
 <?import javafx.scene.layout.*?>
 
-<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="768.0" prefWidth="1024.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="proyectosignin.ui.SignUpController">
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="768.0" prefWidth="1024.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="proyectoSignIn.ui.SignInController">
    <children>
        <TextField fx:id="tfUser" alignment="TOP_LEFT" layoutX="429.0" layoutY="294.0" prefHeight="25.0" prefWidth="250.0" promptText="usuario@dominio.com">
          <tooltip>
@@ -15,12 +15,12 @@
          <tooltip>
             <Tooltip text="Enter your password" />
          </tooltip></PasswordField>
-      <Label layoutX="374.0" layoutY="296.0" text="Email">
+      <Label layoutX="364.0" layoutY="296.0" text="Email">
          <font>
             <Font size="18.0" />
          </font>
       </Label>
-      <Label layoutX="339.0" layoutY="353.0" text="Password">
+      <Label layoutX="328.0" layoutY="353.0" text="Password">
          <font>
             <Font size="18.0" />
          </font>
