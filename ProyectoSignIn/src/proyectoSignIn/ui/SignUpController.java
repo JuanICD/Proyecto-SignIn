@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package proyectosignin.ui;
+package proyectoSignIn.ui;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -32,8 +32,8 @@ import javax.ws.rs.ClientErrorException;
 import javax.ws.rs.ForbiddenException;
 import javax.ws.rs.InternalServerErrorException;
 import javax.ws.rs.NotAuthorizedException;
-import proyectosignin.model.Customer;
-import proyectosignin.logic.CustomerRESTCLient;
+import proyectoSignIn.model.Customer;
+import proyectoSignIn.logic.CustomerRESTCLient;
 
 /**
  * Controlador para la vista de registro de usuarios (Sign Up). Maneja la lógica
