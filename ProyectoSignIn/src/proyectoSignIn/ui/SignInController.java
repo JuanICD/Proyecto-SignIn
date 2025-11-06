@@ -27,6 +27,7 @@ import javax.ws.rs.NotAuthorizedException;
 import proyectoSignIn.logic.CustomerRESTClient;
 import proyectoSignIn.model.Customer;
 
+
 /**
  * Controller class for user management windows
  *
@@ -87,11 +88,11 @@ public class SignInController {
             Customer customer = client.findCustomerByEmailPassword_XML(Customer.class, email, passwd);
             client.close();
             LOGGER.info("User authenticated: " + customer.getEmail());
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("CambiarContraseñaEjemplo.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("ChangePassword.fxml"));
             Parent root = loader.load();
-            SignInController controller = loader.getController();
-            //controller.setCustomer(customer);
-            controller.initStage(stage, root);
+            ChangePasswordController controller = loader.getController();
+            controller.setCustomer(customer);
+            controller.init(stage, root);
 
         } catch (NotAuthorizedException e) {
             lbErrorSignIn.setVisible(true);
