@@ -63,18 +63,18 @@ public class GestionUsuariosController {
         btSignIn.setDisable(true);
         //Asociar eventos a manejadores
         btSignIn.setOnAction(this::handleBtSignInOnAction);
-        btExit.setOnAction(this::handleBtExitOnAction);
         hlRegister.setOnAction(this::handleHlRegisterOnAction);
         tfUser.textProperty().addListener(this::handleTfUserTextChange);
         pfPasswd.textProperty().addListener(this::handlePfPasswdTextChange);
-        /*tfUser.focusedProperty().addListener(this::handleTfUserFocusChange);*/
         //Controlar cierre de ventana
-        stage.setOnCloseRequest(this::handleWindowCloseRequest);
+        btExit.setOnAction(this::handleBtExitOnAction);
         //Mostrar la ventana.
         stage.show();
         //Se enfoca en el campo Email
         tfUser.requestFocus();
-        lbErrorSignIn.setText("");
+        //Oculta los labels de error hasta que se hagan uso
+        lbErrorSignIn.setVisible(false);
+        lbErrorEmail.setVisible(false);
     }
    private void handleBtSignInOnAction(ActionEvent event){
     try {
@@ -83,22 +83,17 @@ public class GestionUsuariosController {
         CustomerRESTClient client = new CustomerRESTClient();
         Customer customer = client.findCustomerByEmailPassword_XML(Customer.class, email, passwd);
         client.close();
-        if(customer == null){
-            lbErrorSignIn.setText("Incorrect email or password");
-        }
         LOGGER.info("User authenticated: " + customer.getEmail());
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("CambiarContraseña.fxml"));
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("CambiarContraseñaEjemplo.fxml"));
         Parent root = loader.load();
         GestionUsuariosController controller =loader.getController();
-        
         //controller.setCustomer(customer);
         controller.initStage(stage, root);
 
     } catch (NotAuthorizedException e) {
-        Alert alert = new Alert(AlertType.ERROR, "Invalid credentials or server unavailable.");
-        alert.showAndWait();
+        lbErrorSignIn.setVisible(true);
     } catch (InternalServerErrorException e) {
-        Alert alert = new Alert(AlertType.ERROR, "Error server down como puchol, try later: " + e.getMessage());
+        Alert alert = new Alert(AlertType.ERROR, "Error server down, try later: " + e.getMessage());
         alert.showAndWait();
     } catch (Exception e) {
         Alert alert = new Alert(AlertType.ERROR, e.getMessage());
@@ -136,15 +131,14 @@ public class GestionUsuariosController {
 
     private void handleTfUserTextChange(ObservableValue observable,String oldValue,String newValue){
         validateFields();
+        String regex_email = "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$";
+        String email =  tfUser.getText().trim();
         // Validar formato de email
-        if(!newValue.isEmpty() && !isValidEmail(newValue)){
-            lbErrorEmail.setText("Invalid email format");
+        if(!newValue.isEmpty() && !email.matches(regex_email)){
+            lbErrorEmail.setVisible(true);
         }else{
-            lbErrorEmail.setText("");
+        lbErrorEmail.setVisible(false);
         }
-    }
-    private void handletfErrorSignIn(ObservableValue observable,String oldValue,String newValue){
-    
     }
     /**
      * 
@@ -152,51 +146,9 @@ public class GestionUsuariosController {
      * @param oldValue
      * @param newValue 
      */
-    
-
     private void handlePfPasswdTextChange(ObservableValue observable,String oldValue,String newValue){
         validateFields();
     }
-    /**
-     * 
-     * @param observable
-     * @param oldValue
-     * @param newValue 
-     */
-
-    /*private void handleTfUserFocusChange(ObservableValue observable,Boolean oldValue,Boolean newValue){
-        if(oldValue){
-            String email = tfUser.getText();
-            if(!email.isEmpty() && !isValidEmail(email)){
-                lbErrorEmail.setText("Invalid email format");
-            }else{
-                lbErrorEmail.setText("");
-            }
-        }
-    }*/
-    /**
-     * 
-     * @param event 
-     */
-    
-    private void handleWindowCloseRequest(WindowEvent event){
-        Alert confirm = new Alert(AlertType.CONFIRMATION, "Estas seguro que quieres salir?");
-        Optional<ButtonType> result = confirm.showAndWait();
-        if(result.isPresent() && result.get() != ButtonType.OK){
-            event.consume();
-        }
-    }
-    /**
-     * 
-     * @param email
-     * @return 
-     */
-    private boolean isValidEmail(String email){
-        String regex = "^[A-Za-z0-9+_.-]+@(.+)$";
-        return Pattern.matches(regex, email);
-    }
-    
-
     private void validateFields(){
         boolean disable = tfUser.getText().isEmpty() || pfPasswd.getText().isEmpty();
         btSignIn.setDisable(disable);
