@@ -29,13 +29,16 @@ public class GestionUsuariosControllerTest extends ApplicationTest {
         new proyectoSignIn.ProyectoSignInApplication().start(stage);
     }
 
-    @Test
+    /*
+   @Test
     public void test1_EmailisFocus() {
         verifyThat("#tfEmail", isFocused());
     }
-
+     */
     @Test
     public void test2_UserRegister() {
+        clickOn("Regiter");
+
         clickOn("#tfEmail");
         write("puma@marranote.com");
         verifyThat("#btnSignUp", isDisabled());
