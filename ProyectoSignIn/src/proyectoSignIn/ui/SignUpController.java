@@ -33,7 +33,7 @@ import javax.ws.rs.ForbiddenException;
 import javax.ws.rs.InternalServerErrorException;
 import javax.ws.rs.NotAuthorizedException;
 import proyectoSignIn.model.Customer;
-import proyectoSignIn.logic.CustomerRESTCLient;
+import proyectoSignIn.logic.CustomerRESTClient;
 
 /**
  * Controlador para la vista de registro de usuarios (Sign Up). Maneja la lógica
@@ -105,6 +105,8 @@ public class SignUpController {
     private Label passwordMessage;
     @FXML
     private Label confirmPassMessage;
+    
+    private Stage stage;
 
     private static final Logger LOGGER = Logger.getLogger("proyectosignin.ui");
 
@@ -574,7 +576,7 @@ public class SignUpController {
      * @param event
      */
     private void handleOnSignUpAction(ActionEvent event) {
-        CustomerRESTCLient client = null;
+        CustomerRESTClient client = null;
         try {
 
             //Crear objeto customer
@@ -592,7 +594,7 @@ public class SignUpController {
             );
 
             //Insertar customer en BD
-            client = new CustomerRESTCLient();
+            client = new CustomerRESTClient();
             client.create_XML(customer);
             //Indicar al usuario que se ha registrado correctamente
 
@@ -603,8 +605,8 @@ public class SignUpController {
 
             FXMLLoader loader = new FXMLLoader(getClass().getResource("SignInFX.fxml"));
             Parent root = loader.load();
-            Scene scene = ((Node) event.getSource()).getScene();
-            scene.setRoot(root);
+            SignInController controller = loader.getController();
+            controller.initStage(this.stage, root);
 
         } catch (InternalServerErrorException e) {
             LOGGER.info("Error server" + e.getMessage());
@@ -643,8 +645,8 @@ public class SignUpController {
             if (btnType.isPresent() && btnType.get() == ButtonType.OK) {
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("SignInFX.fxml"));
                 Parent root = loader.load();
-                Scene scene = ((Node) event.getSource()).getScene();
-                scene.setRoot(root);
+                SignInController controller = loader.getController();
+                controller.initStage(this.stage, root);
                 LOGGER.info("Volviendo a la pagina de inicio");
             }
 

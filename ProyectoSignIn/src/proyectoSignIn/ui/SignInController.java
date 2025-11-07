@@ -130,8 +130,8 @@ public class SignInController {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("SignUP_View.fxml"));
             Parent root = loader.load();
-            Scene scene = ((Node) event.getSource()).getScene();
-            scene.setRoot(root);
+            SignUpController controller = loader.getController();
+            controller.initStage(stage, root);
         } catch (Exception e) {
             Alert alert = new Alert(AlertType.ERROR, e.getMessage());
             alert.showAndWait();
