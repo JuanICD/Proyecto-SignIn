@@ -16,7 +16,6 @@ import static org.testfx.api.FxAssert.verifyThat;
 import org.testfx.framework.junit.ApplicationTest;
 import static org.testfx.matcher.base.NodeMatchers.isFocused;
 //import org.testfx.assertions.api.Assertions;
-import proyectoSignIn.ProyectoSignIn;
 
 /**
  *
@@ -28,7 +27,7 @@ public class ChangePasswordControllerTest extends ApplicationTest {
     
     @Override
     public void start (Stage stage) throws Exception{
-        new ProyectoSignIn().start(stage);
+        new proyectoSignIn.ProyectoSignInApplication().start(stage);
     }
     @Test
     public void testCurrentPasswordIsFocused() {

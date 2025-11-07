@@ -16,7 +16,6 @@ import static org.testfx.matcher.base.NodeMatchers.isDisabled;
 import static org.testfx.matcher.base.NodeMatchers.isEnabled;
 import static org.testfx.matcher.base.NodeMatchers.isFocused;
 import static org.testfx.matcher.base.NodeMatchers.isVisible;
-import proyectoSignIn.SignInSignUpApplication;
 
 /**
  *
@@ -27,7 +26,7 @@ public class GestionUsuariosControllerTest extends ApplicationTest {
 
     @Override
     public void start(Stage stage) throws Exception {
-        new SignInSignUpApplication().start(stage);
+        new proyectoSignIn.ProyectoSignInApplication().start(stage);
     }
 
     @Test
