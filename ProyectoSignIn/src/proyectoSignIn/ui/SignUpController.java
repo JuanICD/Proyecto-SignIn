@@ -603,8 +603,8 @@ public class SignUpController {
 
             FXMLLoader loader = new FXMLLoader(getClass().getResource("SignInFX.fxml"));
             Parent root = loader.load();
-            Scene scene = ((Node) event.getSource()).getScene();
-            scene.setRoot(root);
+            SignInController controller = loader.getController();
+            controller.initStage(this.stage, root);
 
         } catch (InternalServerErrorException e) {
             LOGGER.info("Error server" + e.getMessage());
@@ -643,8 +643,8 @@ public class SignUpController {
             if (btnType.isPresent() && btnType.get() == ButtonType.OK) {
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("SignInFX.fxml"));
                 Parent root = loader.load();
-                Scene scene = ((Node) event.getSource()).getScene();
-                scene.setRoot(root);
+                SignInController controller = loader.getController();
+                controller.initStage(this.stage, root);
                 LOGGER.info("Volviendo a la pagina de inicio");
             }
 
