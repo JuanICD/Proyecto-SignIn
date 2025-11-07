@@ -5,7 +5,7 @@
  */
 package ui;
 
-import ProyectoSignIn.ProyectoSignInApplication;
+import proyectoSignIn.ProyectoSignInApplication;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import org.junit.FixMethodOrder;
@@ -13,7 +13,7 @@ import org.junit.runners.MethodSorters;
 import org.testfx.api.FxToolkit;
 import org.testfx.framework.junit.ApplicationTest;
 import javafx.stage.Stage;
-import ProyectoSignIn.ProyectoSignInApplication;
+import proyectoSignIn.ProyectoSignInApplication;
 
 /**
  *
