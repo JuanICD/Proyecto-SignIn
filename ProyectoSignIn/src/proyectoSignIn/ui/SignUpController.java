@@ -33,7 +33,7 @@ import javax.ws.rs.ForbiddenException;
 import javax.ws.rs.InternalServerErrorException;
 import javax.ws.rs.NotAuthorizedException;
 import proyectoSignIn.model.Customer;
-import proyectoSignIn.logic.CustomerRESTCLient;
+import proyectoSignIn.logic.CustomerRESTClient;
 
 /**
  * Controlador para la vista de registro de usuarios (Sign Up). Maneja la lógica
@@ -574,7 +574,7 @@ public class SignUpController {
      * @param event
      */
     private void handleOnSignUpAction(ActionEvent event) {
-        CustomerRESTCLient client = null;
+        CustomerRESTClient client = null;
         try {
 
             //Crear objeto customer
@@ -592,7 +592,7 @@ public class SignUpController {
             );
 
             //Insertar customer en BD
-            client = new CustomerRESTCLient();
+            client = new CustomerRESTClient();
             client.create_XML(customer);
             //Indicar al usuario que se ha registrado correctamente
 

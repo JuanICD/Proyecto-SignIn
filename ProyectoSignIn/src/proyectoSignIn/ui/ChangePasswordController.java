@@ -5,42 +5,18 @@
  */
 package proyectoSignIn.ui;
 
-
-
-import java.util.logging.Logger;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.PasswordField;
+import javafx.scene.control.*;
 import javafx.stage.Stage;
-
-//package proyectosignin2.ui;
-
-import java.util.logging.Logger;
-import javafx.beans.value.ObservableValue;
-import javafx.event.ActionEvent;
-import javafx.fxml.FXML;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.PasswordField;
-import javafx.stage.Stage;
-import javax.ws.rs.InternalServerErrorException;
-import proyectoSignIn.logic.CustomerRESTClient;
 import proyectoSignIn.model.Customer;
+import proyectoSignIn.logic.CustomerRESTClient;
+import javax.ws.rs.InternalServerErrorException;
+import java.util.logging.Logger;
 
-
-
-/**
- * Controlador para el cambio de contraseña.
- * @author puchol
- */
 public class ChangePasswordController {
 
     @FXML
@@ -60,13 +36,13 @@ public class ChangePasswordController {
     @FXML
     private Label error3;
 
-    private static final Logger LOGGER = Logger.getLogger("ui/proyectosignin2.ui");
+    private static final Logger LOGGER = Logger.getLogger("ui/proyectoSignIn.ui");
     private Customer customer;
-    
-     public void setCustomer(Customer customer){
+
+    public void setCustomer(Customer customer) {
         this.customer = customer;
     }
-   
+
     public void init(Stage stage, Parent root) {
         LOGGER.info("Initializing Change Password window");
         Scene scene = new Scene(root);
@@ -74,13 +50,11 @@ public class ChangePasswordController {
         stage.setTitle("Change Password");
         stage.setResizable(false);
 
-        //applyExit.setDisable(true);
-
         // Asociar eventos a botones
         applyExit.setOnAction(this::handleApplyExitOnAction);
         back.setOnAction(this::handleBackOnAction);
 
-        // Asociar validaciones a los campos
+        // Asociar validaciones
         currentPassword.textProperty().addListener(this::handleCurrentPassword);
         newPassword.textProperty().addListener(this::handleNewPassword);
         repeatNewPassword.textProperty().addListener(this::handleRepeatNewPassword);
@@ -88,7 +62,7 @@ public class ChangePasswordController {
         stage.show();
     }
 
-    // VALIDACIONES CON TRY / CATCH
+    // ------------------ VALIDACIONES ------------------
 
     private void handleCurrentPassword(ObservableValue observable, String oldValue, String newValue) {
         try {
@@ -96,9 +70,8 @@ public class ChangePasswordController {
             error1.setText("");
         } catch (ValidationException e) {
             error1.setText(e.getMessage());
-        } finally {
-            checkAllValid();
         }
+        checkAllValid();
     }
 
     private void handleNewPassword(ObservableValue observable, String oldValue, String newValue) {
@@ -107,9 +80,8 @@ public class ChangePasswordController {
             error2.setText("");
         } catch (ValidationException e) {
             error2.setText(e.getMessage());
-        } finally {
-            checkAllValid();
         }
+        checkAllValid();
     }
 
     private void handleRepeatNewPassword(ObservableValue observable, String oldValue, String newValue) {
@@ -118,16 +90,17 @@ public class ChangePasswordController {
             error3.setText("");
         } catch (ValidationException e) {
             error3.setText(e.getMessage());
-        } finally {
-            checkAllValid();
         }
+        checkAllValid();
     }
-
-    // MÉTODOS DE VALIDACIÓN
+    // ------------------ MÉTODOS DE VALIDACIÓN ------------------
 
     private void validarContraseñaActual(String password) throws ValidationException {
-        if (password.isEmpty()) {
+        if (password == null || password.isEmpty()) {
             throw new ValidationException("The current password cannot be empty.");
+        }
+        if (customer == null) {
+            throw new ValidationException("User data not loaded. Please log in again.");
         }
         if (!password.equals(customer.getPassword())) {
             throw new ValidationException("The current password is incorrect.");
@@ -148,9 +121,9 @@ public class ChangePasswordController {
             throw new ValidationException("It must contain at least one number.");
         }
         if (!password.matches(".*[!@#$%^&*()_+\\-={}\\[\\]:;\"'|<>,.?/~`].*")) {
-        throw new ValidationException("It must contain at least one symbol (for example: @, #, $, %, &).");
+            throw new ValidationException("It must contain at least one symbol (for example: @, #, $, %, &).");
         }
-        if (password.equals(customer.getPassword())) {
+        if (customer != null && password.equals(customer.getPassword())) {
             throw new ValidationException("The new password cannot be the same as the current one.");
         }
     }
@@ -164,9 +137,7 @@ public class ChangePasswordController {
         }
     }
 
-    
-    // HABILITAR / DESHABILITAR BOTÓN
-    
+    // ------------------ HABILITAR / DESHABILITAR BOTÓN ------------------
 
     private void checkAllValid() {
         boolean valid =
@@ -177,51 +148,47 @@ public class ChangePasswordController {
                 !newPassword.getText().isEmpty() &&
                 !repeatNewPassword.getText().isEmpty();
 
-        //applyExit.setDisable(!valid);
+        // applyExit.setDisable(!valid);
     }
 
-     
-    // EVENTOS DE BOTONES
-     
+    // ------------------ EVENTOS DE BOTONES ------------------
 
     private void handleApplyExitOnAction(ActionEvent event) {
         try {
+            // Validar contraseñas
             validarContraseñaActual(currentPassword.getText());
             validarNuevaContraseña(newPassword.getText());
             validarRepetición(newPassword.getText(), repeatNewPassword.getText());
 
+            // Actualizar contraseña en la base de datos
+            CustomerRESTClient client = new CustomerRESTClient();
+            customer = client.findCustomerByEmailPassword_XML(Customer.class,customer.getEmail(),customer.getPassword());
+            customer.setPassword(newPassword.getText());
+            client.edit_XML(customer.getId(), customer.getPassword());
+            client.close();
+
+            // Mostrar mensaje de éxito
             Alert alert = new Alert(Alert.AlertType.INFORMATION, "Password changed successfully.");
             alert.showAndWait();
 
-            ((Stage) applyExit.getScene().getWindow()).close();
         } catch (ValidationException e) {
             Alert alert = new Alert(Alert.AlertType.ERROR, e.getMessage());
             alert.showAndWait();
-        }
-        try{
-            //Crear un objeto Customer
-            CustomerRESTClient client = new CustomerRESTClient();
-            this.customer = client.findCustomerByEmailPassword_XML(Customer.class, "jsmith@enterprise.net", "abcd*1234");
-            //Establecer propiedades del objeto a partir de los valores de los campos
-            //customer.setPassword("");
-            //client.edit_XML(customer);
-            client.close();
-            //Indicar al ususario que ha cambiado la contraseña correctamente
-            Alert alert = new Alert(Alert.AlertType.INFORMATION, "Password changed successfully.");
-            //abrir ventana de Change Password
-            //Solo se me produce la 500 InternalServerErrorException
-        }catch(InternalServerErrorException e){
-        Alert alert = new Alert(Alert.AlertType.ERROR, e.getMessage());
+        } catch (InternalServerErrorException e) {
+            Alert alert = new Alert(Alert.AlertType.ERROR, "Server error while updating password: " + e.getMessage());
+            alert.showAndWait();
+        } catch (Exception e) {
+            Alert alert = new Alert(Alert.AlertType.ERROR, "Unexpected error: " + e.getMessage());
             alert.showAndWait();
         }
     }
-    
+
     private void handleBackOnAction(ActionEvent event) {
         ((Stage) back.getScene().getWindow()).close();
     }
-    // 
-    // CLASE INTERNA DE EXCEPCIÓN PERSONALIZADA
-    // 
+
+    // ------------------ EXCEPCIÓN PERSONALIZADA ------------------
+
     private static class ValidationException extends Exception {
         public ValidationException(String message) {
             super(message);

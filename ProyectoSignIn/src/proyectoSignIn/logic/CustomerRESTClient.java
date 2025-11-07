@@ -9,7 +9,9 @@ import javax.ws.rs.ClientErrorException;
 import javax.ws.rs.InternalServerErrorException;
 import javax.ws.rs.NotAuthorizedException;
 import javax.ws.rs.client.Client;
+import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.WebTarget;
+import javax.ws.rs.core.MediaType;
 
 /**
  * Jersey REST client generated for REST resource:CustomerFacadeREST
@@ -28,15 +30,16 @@ public class CustomerRESTClient {
 
     private WebTarget webTarget;
     private Client client;
-    private static final String BASE_URI = "http://localhost:8080/CRUDBankServerSide/webresources";
+    private static final String BASE_URI = "http://192.168.30.21:8080/CRUDBankServerSide/webresources";
 
     public CustomerRESTClient() {
         client = javax.ws.rs.client.ClientBuilder.newClient();
         webTarget = client.target(BASE_URI).path("customer");
     }
 
-    public void edit_XML(Object requestEntity) throws ClientErrorException {
-        webTarget.request(javax.ws.rs.core.MediaType.APPLICATION_XML).put(javax.ws.rs.client.Entity.entity(requestEntity, javax.ws.rs.core.MediaType.APPLICATION_XML));
+     public void edit_XML(Long id, Object requestEntity)throws InternalServerErrorException {
+        WebTarget resource = webTarget.path(String.valueOf(id));
+        resource.request(MediaType.APPLICATION_XML).put(Entity.entity(requestEntity, MediaType.APPLICATION_XML));
     }
 
     public void edit_JSON(Object requestEntity) throws ClientErrorException {

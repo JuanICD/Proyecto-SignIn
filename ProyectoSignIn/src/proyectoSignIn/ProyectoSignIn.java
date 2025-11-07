@@ -10,6 +10,8 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import proyectoSignIn.logic.CustomerRESTClient;
+import proyectoSignIn.model.Customer;
 import proyectoSignIn.ui.ChangePasswordController;
 
 /**
@@ -20,16 +22,15 @@ public class ProyectoSignIn extends Application {
     
     @Override
     public void start(Stage stage) throws Exception {
-        
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/proyectosignin2/ui/ChangePassword.fxml"));
-
-        Parent root = (Parent)loader.load();
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/proyectoSignIn/ui/ChangePassword.fxml"));
+        Parent root = loader.load();
         ChangePasswordController controller = loader.getController();
-        
-        controller.init(stage,root);
-        
-      
-    }
+    
+        //CustomerRESTClient client = new CustomerRESTClient();
+       // client.close();
+
+        controller.init(stage, root);
+}
 
     /**
      * @param args the command line arguments
