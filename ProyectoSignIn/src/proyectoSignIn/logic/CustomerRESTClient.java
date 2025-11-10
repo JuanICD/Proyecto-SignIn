@@ -10,7 +10,9 @@ import javax.ws.rs.ForbiddenException;
 import javax.ws.rs.InternalServerErrorException;
 import javax.ws.rs.NotAuthorizedException;
 import javax.ws.rs.client.Client;
+import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.WebTarget;
+import javax.ws.rs.core.MediaType;
 
 /**
  * Jersey REST client generated for REST resource:CustomerFacadeREST
@@ -36,9 +38,9 @@ public class CustomerRESTClient {
         webTarget = client.target(BASE_URI).path("customer");
     }
 
-    public void edit_XML(Long id, Object requestEntity) throws InternalServerErrorException {
-        WebTarget resource = webTarget.path(String.valueOf(id));
-        resource.request(MediaType.APPLICATION_XML).put(Entity.entity(requestEntity, MediaType.APPLICATION_XML));
+    public void edit_XML(Object requestEntity, long id) throws InternalServerErrorException {
+        webTarget.request(javax.ws.rs.core.MediaType.APPLICATION_XML)
+                .put(javax.ws.rs.client.Entity.entity(requestEntity, javax.ws.rs.core.MediaType.APPLICATION_XML));
     }
 
     public void edit_JSON(Object requestEntity) throws ClientErrorException {

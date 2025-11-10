@@ -89,6 +89,7 @@ public class SignInController {
             Customer customer = client.findCustomerByEmailPassword_XML(Customer.class, email, passwd);
             client.close();
             LOGGER.info("User authenticated: " + customer.getEmail());
+            
             FXMLLoader loader = new FXMLLoader(getClass().getResource("ChangePassword.fxml"));
             Parent root = loader.load();
             ChangePasswordController controller = loader.getController();

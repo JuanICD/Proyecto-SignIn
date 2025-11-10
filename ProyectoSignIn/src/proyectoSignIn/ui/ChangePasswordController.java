@@ -44,11 +44,11 @@ public class ChangePasswordController {
     @FXML
     private Label error3;
 
-    private static final Logger LOGGER = Logger.getLogger("ui/proyectosignin2.ui");
+    private static final Logger LOGGER = Logger.getLogger("ui/proyectoSignIn.ui");
     private Customer customer;
 
     public void setCustomer(Customer customer) {
-        this.customer = customer;
+            this.customer = customer;
     }
 
     public void init(Stage stage, Parent root) {
@@ -169,8 +169,8 @@ public class ChangePasswordController {
             // Actualizar contraseña en la base de datos
             CustomerRESTClient client = new CustomerRESTClient();
             customer = client.findCustomerByEmailPassword_XML(Customer.class, customer.getEmail(), customer.getPassword());
-            customer.setPassword(newPassword.getText());
-            client.edit_XML(customer.getId(), customer.getPassword());
+            customer.setPassword(repeatNewPassword.getText());
+            client.edit_XML(customer, customer.getId());
             client.close();
 
             // Mostrar mensaje de éxito
