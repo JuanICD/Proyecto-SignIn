@@ -54,6 +54,7 @@ public class ChangePasswordController {
     public void init(Stage stage, Parent root) {
         LOGGER.info("Initializing Change Password window");
         Scene scene = new Scene(root);
+        scene.getStylesheets().add(getClass().getResource("styleSheet.css").toExternalForm());
         stage.setScene(scene);
         stage.setTitle("Change Password");
         stage.setResizable(false);
