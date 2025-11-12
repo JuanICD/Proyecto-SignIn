@@ -28,12 +28,10 @@ import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 
 import javafx.stage.Stage;
-import javax.ws.rs.ClientErrorException;
 import javax.ws.rs.ForbiddenException;
 import javax.ws.rs.InternalServerErrorException;
-import javax.ws.rs.NotAuthorizedException;
 import proyectoSignIn.model.Customer;
-import proyectoSignIn.logic.CustomerRESTCLient;
+import proyectoSignIn.logic.CustomerRESTClient;
 
 /**
  * Controlador para la vista de registro de usuarios (Sign Up). Maneja la lógica
@@ -105,6 +103,7 @@ public class SignUpController {
     private Label passwordMessage;
     @FXML
     private Label confirmPassMessage;
+    private Stage stage;
 
     private static final Logger LOGGER = Logger.getLogger("proyectosignin.ui");
 
@@ -124,6 +123,7 @@ public class SignUpController {
         try {
 
             LOGGER.info("Initializing window");
+            this.stage = stage;
             Scene scene = new Scene(root);
             //Asigno la hoja de estilos
             scene.getStylesheets().add(getClass().getResource("styleSheet.css").toExternalForm());
@@ -132,7 +132,7 @@ public class SignUpController {
             btnSignUp.setDisable(true);
 
             //Establecer el título de la ventana a “Sign up”
-            stage.setTitle("Sign In");
+            stage.setTitle("Sign Up");
 
             //La ventana no debe ser redimensionable
             stage.setResizable(false);
@@ -199,8 +199,8 @@ public class SignUpController {
 
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("SignInFX.fxml"));
                 Parent root = loader.load();
-                Scene scene = ((Node) event.getSource()).getScene();
-                scene.setRoot(root);
+                SignInController controller = loader.getController();
+                controller.initStage(this.stage, root);
                 LOGGER.info("volviendo a la pagina de Sign In");
             }
 
@@ -574,7 +574,7 @@ public class SignUpController {
      * @param event
      */
     private void handleOnSignUpAction(ActionEvent event) {
-        CustomerRESTCLient client = null;
+        CustomerRESTClient client = null;
         try {
 
             //Crear objeto customer
@@ -592,7 +592,7 @@ public class SignUpController {
             );
 
             //Insertar customer en BD
-            client = new CustomerRESTCLient();
+            client = new CustomerRESTClient();
             client.create_XML(customer);
             //Indicar al usuario que se ha registrado correctamente
 
@@ -603,8 +603,8 @@ public class SignUpController {
 
             FXMLLoader loader = new FXMLLoader(getClass().getResource("SignInFX.fxml"));
             Parent root = loader.load();
-            Scene scene = ((Node) event.getSource()).getScene();
-            scene.setRoot(root);
+            SignInController controller = loader.getController();
+            controller.initStage(this.stage, root);
 
         } catch (InternalServerErrorException e) {
             LOGGER.info("Error server" + e.getMessage());
@@ -625,7 +625,7 @@ public class SignUpController {
             client.close();
         }
     }
-    
+
     /**
      * Método de utilidad para mostrar un mensaje de error de validación. Pone
      * el texto de la etiqueta y el borde del campo en color rojo.
@@ -643,13 +643,13 @@ public class SignUpController {
             if (btnType.isPresent() && btnType.get() == ButtonType.OK) {
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("SignInFX.fxml"));
                 Parent root = loader.load();
-                Scene scene = ((Node) event.getSource()).getScene();
-                scene.setRoot(root);
+                SignInController controller = loader.getController();
+                controller.initStage(this.stage, root);
                 LOGGER.info("Volviendo a la pagina de inicio");
             }
 
         } catch (Exception e) {
-            LOGGER.warning("Se ha producido un error"+e.getMessage());
+            LOGGER.warning("Se ha producido un error" + e.getMessage());
             Alert alert = new Alert(Alert.AlertType.ERROR, e.getMessage() + "\nTry again");
 
         }

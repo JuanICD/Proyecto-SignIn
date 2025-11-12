@@ -1,30 +1,32 @@
+package proyectoSignIn;
+
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package proyectoSignIn;
+
 
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.stage.Stage;
-import proyectoSignIn.ui.SignUpController;
-
+import proyectoSignIn.ui.SignInController;
 
 /**
  *
- * @author juan
+ * @author alex
  */
-public class SignInSignUpApplication extends Application {
-
+public class ProyectoSignInApplication extends Application {
+    
     @Override
     public void start(Stage stage) throws Exception {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("ui/SignUP_View.fxml"));
-        Parent root = (Parent) loader.load();
-        SignUpController controller = loader.getController();
+        FXMLLoader loader =new FXMLLoader(getClass().getResource("ui/SignInFX.fxml"));
+        Parent root = (Parent)loader.load();
+        
+        SignInController controller = loader.getController();
+        
         controller.initStage(stage,root);
-             
     }
 
     /**
@@ -33,5 +35,5 @@ public class SignInSignUpApplication extends Application {
     public static void main(String[] args) {
         launch(args);
     }
-
+    
 }

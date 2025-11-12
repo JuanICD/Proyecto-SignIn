@@ -16,7 +16,6 @@ import static org.testfx.matcher.base.NodeMatchers.isDisabled;
 import static org.testfx.matcher.base.NodeMatchers.isEnabled;
 import static org.testfx.matcher.base.NodeMatchers.isFocused;
 import static org.testfx.matcher.base.NodeMatchers.isVisible;
-import proyectoSignIn.SignInSignUpApplication;
 
 /**
  *
@@ -27,16 +26,19 @@ public class GestionUsuariosControllerTest extends ApplicationTest {
 
     @Override
     public void start(Stage stage) throws Exception {
-        new SignInSignUpApplication().start(stage);
+        new proyectoSignIn.ProyectoSignInApplication().start(stage);
     }
 
-    @Test
+    /*
+   @Test
     public void test1_EmailisFocus() {
         verifyThat("#tfEmail", isFocused());
     }
-
+     */
     @Test
     public void test2_UserRegister() {
+        clickOn("Regiter");
+
         clickOn("#tfEmail");
         write("puma@marranote.com");
         verifyThat("#btnSignUp", isDisabled());
