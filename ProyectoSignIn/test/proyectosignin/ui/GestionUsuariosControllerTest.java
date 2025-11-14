@@ -8,6 +8,7 @@ package proyectosignin.ui;
 import javafx.stage.Stage;
 import org.junit.Test;
 import static org.junit.Assert.*;
+import org.junit.Before;
 import org.junit.FixMethodOrder;
 import org.junit.runners.MethodSorters;
 import static org.testfx.api.FxAssert.verifyThat;
@@ -29,18 +30,21 @@ public class GestionUsuariosControllerTest extends ApplicationTest {
         new proyectoSignIn.ProyectoSignInApplication().start(stage);
     }
 
-    /*
-   @Test
-    public void test1_EmailisFocus() {
+    @Before
+    public void test_changeWindow(){
+        clickOn("Register");
+        verifyThat("#mainPane", isVisible());
         verifyThat("#tfEmail", isFocused());
     }
-     */
+    
+  
+     
     @Test
-    public void test2_UserRegister() {
-        clickOn("Regiter");
-
+    public void test1_UserRegister() {
+        
+        
         clickOn("#tfEmail");
-        write("puma@marranote.com");
+        write("juan@"+System.currentTimeMillis()+".com");
         verifyThat("#btnSignUp", isDisabled());
 
         clickOn("#tfFirstName");
@@ -91,9 +95,9 @@ public class GestionUsuariosControllerTest extends ApplicationTest {
     }
 
     @Test
-    public void test3_EmailAlreadyExist() {
+    public void test2_EmailAlreadyExist() {
         clickOn("#tfEmail");
-        write("juan@dwq.com");
+        write("jsmith@enterprise.net");
         verifyThat("#btnSignUp", isDisabled());
 
         clickOn("#tfFirstName");
@@ -144,7 +148,7 @@ public class GestionUsuariosControllerTest extends ApplicationTest {
     }
 
     @Test
-    public void test4_LabelsCheck() {
+    public void test3_LabelsCheck() {
         clickOn("#tfEmail");
 
         clickOn("#tfFirstName");
@@ -180,7 +184,7 @@ public class GestionUsuariosControllerTest extends ApplicationTest {
     }
 
     @Test
-    public void test5_HyperLinkClick() {
+    public void test4_HyperLinkClick() {
         clickOn("Sign In");
         verifyThat("Are you sure you want to exit, all changes will delete", isVisible());
         clickOn("Aceptar");
@@ -190,7 +194,7 @@ public class GestionUsuariosControllerTest extends ApplicationTest {
     }
 
     @Test
-    public void test6_BackButton() {
+    public void test5_BackButton() {
         clickOn("#btnBack");
         verifyThat("Are you sure you want to exit?", isVisible());
         clickOn("Aceptar");
