@@ -69,4 +69,13 @@ public class ProyectoSignInApplicationTest extends ApplicationTest{
         write("app@gmail.com");
         clickOn("#btSignIn");
     }
+    @Test
+    public void testRegister(){
+        clickOn("#hlRegister");
+    }
+    @Test
+    public void testExit(){
+        clickOn("#btExit");
+        clickOn("Aceptar");
+    }
 }
