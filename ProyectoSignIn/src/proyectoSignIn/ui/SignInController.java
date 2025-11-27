@@ -176,5 +176,17 @@ public class SignInController {
         }
 
     }
+    private void handleExitWindow(ActionEvent event) {
+        try {
+            Alert confirm = new Alert(AlertType.CONFIRMATION, "Estas seguro que quieres salir?");
+            Optional<ButtonType> result = confirm.showAndWait();
+            if (result.isPresent() && result.get() == ButtonType.OK) {
+                stage.close();
+            }
+        } catch (Exception e) {
+            Alert alert = new Alert(AlertType.ERROR, e.getMessage());
+            alert.showAndWait();
+        }
+    }
 
 }
